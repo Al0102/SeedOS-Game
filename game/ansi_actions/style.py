@@ -1,7 +1,6 @@
 """
 Helpers for visual customization like text colour and emphasis.
 """
-from zoneinfo import reset_tzpath
 
 
 def get_styles():
@@ -42,7 +41,6 @@ def get_styles():
     ...      "background_cyan": "\033[46m",
     ...      "background_white": "\033[47m"}
     True
-
     """
     return {
         "reset": "\033[0m",
