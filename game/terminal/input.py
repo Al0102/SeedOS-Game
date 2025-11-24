@@ -4,7 +4,8 @@ OS dependent inputs with getch and msvcrt.
 import os
 from string import printable
 from game.ansi_actions import cursor
-from game.terminal.screen import get_screen_size, draw_text_box, clear_screen
+from game.terminal.screen import get_screen_size, clear_screen
+from game.terminal.draw import draw_text_box
 
 
 def get_key_codes(system=os.name):
@@ -20,6 +21,26 @@ def get_key_codes(system=os.name):
     :postcondition: print error message if <system> is invalid or unsupported
     :return: a dictionary of key code names and their OS dependent key codes,
              or None if <system> is unsupported or invalid
+
+    >>> get_key_codes("posix") == {
+    ... "enter": "\\n",
+    ... "backspace": "\x7f",
+    ... "escape": "\x1b",
+    ... "up": "A",
+    ... "left": "D",
+    ... "right": "C",
+    ... "down": "B"}
+    True
+    >>> get_key_codes("nt") == {
+    ... "enter": "\\r",
+    ... "backspace": "\x08",
+    ... "escape": "\x1b",
+    ... "extend": "\xe0",
+    ... "up": "H",
+    ... "left": "K",
+    ... "right": "M",
+    ... "down": "P"}
+    True
     """
     if system == "posix":
         return {
@@ -119,11 +140,11 @@ def pull_input(terminal_input, amount=1, flush=False):
 
     >>> input_dictionary = {"input_queue": []}
     >>> pull_input(input_dictionary)
-    None
+
     >>> input_dictionary = {"input_queue": [" ", "a", "escape"]}
     >>> pull_input(input_dictionary, amount=2, flush=True)
     [' ', 'a']
-    >>> input_dictionary
+    >>> input_dictionary["input_queue"]
     []
     """
     queue_length = len(terminal_input["input_queue"])
@@ -186,17 +207,11 @@ def text_input(terminal_input, column, row, max_width=None, hide=False):
             cursor_at -= 1
         elif inputted == "right":
             cursor_at = min(len(string_input), cursor_at + 1)
-            # if cursor_at > len(string_input):
-            #     draw_index += 1
         elif inputted == "left":
             cursor_at = max(0, cursor_at - 1)
-            # if cursor_at < draw_index:
-            #     draw_index -= 1
         elif inputted in printable:
             string_input.insert(cursor_at, inputted)
             cursor_at = min(len(string_input), cursor_at + 1)
-            # if len(string_input) - draw_index > max_width:
-            #     draw_index += 1
         else:
             continue
         if hide:
