@@ -31,6 +31,9 @@ def create_text_area(column, row, width, height, text):
     >>> create_text_area(1, 1, 1, 1, "") == {
     ... "column": 1, "row": 1, "width": 1, "height": 1, "text": ""}
     True
+    >>> create_text_area(4, 2, 10, 5, "Hello,\\nw\\no\\nr\\nld") == {
+    ... "column": 4, "row": 2, "width": 10, "height": 5, "text": "Hello,\\nw\\no\\nr\\nld"}
+    True
     """
     return {"column": column, "row": row, "width": width, "height": height, "text": text}
 
@@ -65,6 +68,10 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
     :postcondition: existing text within the bounds of the text area will be overwritten with a space
                     if <overwrite> is True
 
+    >>> my_text_area = create_text_area(1, 1, 20, 1, "Hello, World")
+    >>> draw_text_box(text_area=my_text_area)
+    \x1b[1;1HHello, World
+    >>> # Do same but without predefined text area
     >>> draw_text_box(1, 1, 20, 1, "Hello, World")
     \x1b[1;1HHello, World
     >>> draw_text_box(1, 2, 20, 2, "Hello, World", overwrite=True)
