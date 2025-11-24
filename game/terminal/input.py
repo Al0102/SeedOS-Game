@@ -167,6 +167,9 @@ def text_input(terminal_input, column, row, max_width=None, hide=False):
     cursor_at = 0
     draw_index = 0
     while True:
+        cursor.cursor_set(
+            min(max_width + column, max(column, column + cursor_at - draw_index)),
+            row)
         try:
             inputted = terminal_input["key_get"](terminal_input)
         except KeyboardInterrupt:
@@ -202,9 +205,6 @@ def text_input(terminal_input, column, row, max_width=None, hide=False):
             column, row, max_width, 1,
             "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)]),
             overwrite=True)
-        cursor.cursor_set(
-            min(max_width + column, max(column, column + cursor_at - draw_index)),
-            row)
 
 
 def main():
@@ -215,7 +215,9 @@ def main():
     print("Press escape to go to text input")
     key_input = init()
     while True:
-        inputted = key_input["key_get"](key_input)
+        key_input["key_get"](key_input)
+        print(key_input["input_queue"])
+        inputted = pull_input(key_input)[0]
         if not inputted:
             continue
         elif inputted == "escape":
