@@ -80,14 +80,13 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
 
 
 def main():
-    from msvcrt import getch
     print(get_screen_size())
     print("Clear screen after input...")
-    getch()
+    input()
     clear_screen()
     draw_text_box(5, 5, 20, 5,
                   "Hello, World\n123456789012345678901234")
-    getch()
+    input()
     draw_text_box(5, 5, 20, 5,
                   "Bye, World",
                   overwrite=True)
