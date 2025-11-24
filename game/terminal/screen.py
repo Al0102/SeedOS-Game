@@ -54,7 +54,6 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
     :postcondition: draw a text box to the terminal based on the <text_area> or the preceding parameters
     :postcondition: existing text within the bounds of the text area will be overwritten with a space
                     if <overwrite> is True
-    :return: a dictionary representing the data of the text area
     >>> draw_text_box(1, 1, 20, 1, "Hello, World")
     \x1b[1;1HHello, World
     >>> draw_text_box(1, 2, 20, 2, "Hello, World", overwrite=True)
@@ -63,17 +62,17 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
     if not text_area:
         text_area = {"column": column, "row": row, "width": width, "height": height, "text": text}
     text_rows = text_area["text"].split("\n")
-    clip_row_text = lambda row_text: row_text[:min(len(row_text), width)]
+    clip_row_text = lambda row_text: row_text[:min(len(row_text), text_area["width"])]
     text_rows = tuple(map(clip_row_text, text_rows))
-    for row_index in range(height):
+    for row_index in range(text_area["height"]):
         if row_index == len(text_rows) and not overwrite:
             break
         to_draw = ""
-        cursor.cursor_set(column, row + row_index)
+        cursor.cursor_set(text_area["column"], text_area["row"] + row_index)
         if row_index < len(text_rows):
             to_draw += text_rows[row_index]
         if overwrite:
-            to_draw = to_draw.ljust(width)
+            to_draw = to_draw.ljust(text_area["width"])
         print(to_draw, end="")
     print("", end="", flush=True)
     return text_area
