@@ -12,35 +12,34 @@ def get_styles():
     :return: a dictionary representing the available styles and their ANSI escape sequences.
 
     >>> get_styles() == {
-    ... "reset": "\033[0m",
-    ... "bold": "\033[1m",
-    ... "dim": "\033[2m",
-    ... "italic": "\033[3m",
-    ... "underline": "\033[4m",
-    ... "slow_blink": "\033[5m",
-    ... "rapid_blink": "\033[6m",
-    ... "strike": "\033[9m",
-    ... "normal_intensity": "\033[22m",
-    ... "not_italic": "\033[23m",
-    ... "not_underlined": "\033[24m",
-    ... "not_blinking": "\033[25m",
-    ... "black": "\033[30m",
-    ... "red": "\033[31m",
-    ... "green": "\033[32m",
-    ... "yellow": "\033[33m",
-    ... "blue": "\033[34m",
-    ... "magenta": "\033[35m",
-    ... "cyan": "\033[36m",
-    ... "white": "\033[37m",
-    ... "background_black": "\033[40m",
-    ... "background_red": "\033[41m",
-    ... "background_green": "\033[42m",
-    ... "background_yellow": "\033[43m",
-    ... "background_blue": "\033[44m",
-    ... "background_magenta": "\033[45m",
-    ... "background_cyan": "\033[46m",
-    ... "background_white": "\033[47m"}
-    True
+   ... "reset": "\033[0m",
+   ... "bold": "\033[1m",
+   ... "dim": "\033[2m",
+   ... "italic": "\033[3m",
+   ... "underline": "\033[4m",
+   ... "slow_blink": "\033[5m",
+   ... "rapid_blink": "\033[6m",
+   ... "strike": "\033[9m",
+   ... "normal_intensity": "\033[22m",
+   ... "not_italic": "\033[23m",
+   ... "not_underlined": "\033[24m",
+   ... "not_blinking": "\033[25m",
+   ... "black": "\033[30m",
+   ... "red": "\033[31m",
+   ... "green": "\033[32m",
+   ... "yellow": "\033[33m",
+   ... "blue": "\033[34m",
+   ... "magenta": "\033[35m",
+   ... "cyan": "\033[36m",
+   ... "white": "\033[37m",
+   ... "background_black": "\033[40m",
+   ... "background_red": "\033[41m",
+   ... "background_green": "\033[42m",
+   ... "background_yellow": "\033[43m",
+   ... "background_blue": "\033[44m",
+   ... "background_magenta": "\033[45m",
+   ... "background_cyan": "\033[46m",
+   ... "background_white": "\033[47m"}
     """
     return {
         "reset": "\033[0m",
@@ -48,7 +47,7 @@ def get_styles():
         "dim": "\033[2m",
         "italic": "\033[3m",
         "underline": "\033[4m",
-        # <-Usually only for windows powershell->
+        # <-Usually only for Windows Powershell->
         "slow_blink": "\033[5m",
         "rapid_blink": "\033[6m",
         "strike": "\033[9m",
@@ -57,7 +56,7 @@ def get_styles():
         "not_italic": "\033[23m",
         "not_underlined": "\033[24m",
         "not_blinking": "\033[25m",
-
+        # Foreground Colours
         "black": "\033[30m",
         "red": "\033[31m",
         "green": "\033[32m",
@@ -66,7 +65,7 @@ def get_styles():
         "magenta": "\033[35m",
         "cyan": "\033[36m",
         "white": "\033[37m",
-
+        # Background Colours
         "background_black": "\033[40m",
         "background_red": "\033[41m",
         "background_green": "\033[42m",
@@ -74,7 +73,7 @@ def get_styles():
         "background_blue": "\033[44m",
         "background_magenta": "\033[45m",
         "background_cyan": "\033[46m",
-        "background_white": "\033[47m",
+        "background_white": "\033[47m"
     }
 
 
