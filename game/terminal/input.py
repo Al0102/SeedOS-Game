@@ -167,6 +167,10 @@ def text_input(terminal_input, column, row, max_width=None, hide=False):
     cursor_at = 0
     draw_index = 0
     while True:
+        draw_text_box(
+            column, row, max_width, 1,
+            "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)]),
+            overwrite=True)
         cursor.cursor_set(
             min(max_width + column, max(column, column + cursor_at - draw_index)),
             row)
@@ -197,14 +201,10 @@ def text_input(terminal_input, column, row, max_width=None, hide=False):
             continue
         if hide:
             continue
-        draw_index = min(max(0, len(string_input) - max_width), max(0, cursor_at - max_width + draw_index))
-        draw_text_box(
-            20, 20, 50, 1,
-            str(draw_index), overwrite=True)
-        draw_text_box(
-            column, row, max_width, 1,
-            "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)]),
-            overwrite=True)
+        draw_index = max(
+            0, min(
+                len(string_input) - max_width,
+                cursor_at - max_width + draw_index))
 
 
 def main():
@@ -212,21 +212,24 @@ def main():
     Drive the program.
     """
     clear_screen()
-    print("Press escape to go to text input")
+    print("Press escape or tab to go to test text_input")
     key_input = init()
     while True:
         key_input["key_get"](key_input)
-        print(key_input["input_queue"])
         inputted = pull_input(key_input)[0]
         if not inputted:
             continue
-        elif inputted == "escape":
+        elif inputted == "escape" or "\t":
             break
         elif inputted in ("left", "right", "up", "down"):
             cursor.cursor_shift(inputted)
         else:
             print(inputted, end="", flush=True)
-    print(text_input(key_input, 10, 10, 25))
+    draw_text_box(text_area={
+        "column": 1, "row": 10, "width": 12, "height": 1,
+        "text": "User input:"
+    })
+    print(text_input(key_input, 13, 10, 25))
 
 
 if __name__ == '__main__':
