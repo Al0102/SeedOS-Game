@@ -10,8 +10,23 @@ def get_move_options():
     Return a dictionary of available movement options and their ANSI escape code letter.
 
     :postcondition: get a dictionary of available movement options and their ANSI escape code letter
-    :postcondition: the key-value pairs have the form <name>: <sequence> and both are strings
+    :postcondition: the key-value pairs have the form <name>: <sequence letter> and both are strings
     :return: a dictionary representing the available movement options and their ANSI escape code letter.
+
+    >>> get_move_options() == {
+    ... "up": "A",
+    ... "down": "B",
+    ... "right": "C",
+    ... "left": "D",
+    ... "next_line": "E",
+    ... "previous_line": "F",
+    ... "column": "G",
+    ... "position": "H",
+    ... "scroll_up": "S",
+    ... "scroll_down": "T",
+    ... "save_position": "s",
+    ... "load_position": "u"}
+    True
     """
     return {
         "up": "A",
@@ -141,6 +156,9 @@ def cursor_shift(direction, amount=1):
 
 
 def main():
+    """
+    Drive the program.
+    """
     set_cursor_visibility(show=False)
     input("hidden cursor")
     set_cursor_visibility(show=True)
