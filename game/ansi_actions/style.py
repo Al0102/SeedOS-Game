@@ -48,9 +48,11 @@ def get_styles():
         "dim": "\033[2m",
         "italic": "\033[3m",
         "underline": "\033[4m",
+        # <-Usually only for windows powershell->
         "slow_blink": "\033[5m",
         "rapid_blink": "\033[6m",
         "strike": "\033[9m",
+        # <------------------------------------->
         "normal_intensity": "\033[22m",
         "not_italic": "\033[23m",
         "not_underlined": "\033[24m",
@@ -137,6 +139,7 @@ def main():
     print(style("My eyes hurt and it's hard to see...", "dim"))
 
     print(style("I have one last secret...", "strike"))
+
 
 if __name__ == '__main__':
     main()
