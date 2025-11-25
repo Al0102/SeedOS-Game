@@ -23,23 +23,23 @@ def get_key_codes(system=os.name):
              or None if <system> is unsupported or invalid
 
     >>> get_key_codes("posix") == {
-    ... "enter": "\\n",
-    ... "backspace": "\x7f",
-    ... "escape": "\x1b",
-    ... "up": "A",
-    ... "left": "D",
-    ... "right": "C",
-    ... "down": "B"}
+    ...     "enter": "\\n",
+    ...     "backspace": "\\x7f",
+    ...     "escape": "\\x1b",
+    ...     "up": "A",
+    ...     "left": "D",
+    ...     "right": "C",
+    ...     "down": "B"}
     True
     >>> get_key_codes("nt") == {
-    ... "enter": "\\r",
-    ... "backspace": "\x08",
-    ... "escape": "\x1b",
-    ... "extend": "\xe0",
-    ... "up": "H",
-    ... "left": "K",
-    ... "right": "M",
-    ... "down": "P"}
+    ...     "enter": "\\r",
+    ...     "backspace": "\\x08",
+    ...     "escape": "\\x1b",
+    ...     "extend": "\\xe0",
+    ...     "up": "H",
+    ...     "left": "K",
+    ...     "right": "M",
+    ...     "down": "P"}
     True
     """
     if system == "posix":
@@ -234,7 +234,7 @@ def main():
         inputted = pull_input(key_input)[0]
         if not inputted:
             continue
-        elif inputted == "escape" or "\t":
+        elif inputted == "escape":
             break
         elif inputted in ("left", "right", "up", "down"):
             cursor.cursor_shift(inputted)

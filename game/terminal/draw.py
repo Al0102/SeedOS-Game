@@ -29,29 +29,34 @@ def create_text_area(column, row, width, height, text):
     :return: a dictionary representing a text box's data
 
     >>> create_text_area(1, 1, 1, 1, "") == {
-    ... "column": 1, "row": 1, "width": 1, "height": 1, "text": ""}
+    ...     "column": 1, "row": 1, "width": 1, "height": 1, "text": ""}
     True
     >>> create_text_area(4, 2, 10, 5, "Hello,\\nw\\no\\nr\\nld") == {
-    ... "column": 4, "row": 2, "width": 10, "height": 5, "text": "Hello,\\nw\\no\\nr\\nld"}
+    ...     "column": 4, "row": 2, "width": 10, "height": 5, "text": "Hello,\\nw\\no\\nr\\nld"}
     True
     """
     return {"column": column, "row": row, "width": width, "height": height, "text": text}
 
 
-def draw_text_box(column=None, row=None, width=None, height=None, text="", text_area=None, overwrite=False):
+def draw_text_box(
+        column=None, row=None, width=None, height=None, text="",
+        text_area=None, overwrite=False, flush_output=True):
     """
     Draw a text box to the terminal.
 
     A text area dictionary has the form:
     {"column": <int>, "row": <int>, "width": <int>, "height": <int>, text: <str>}
 
-    :param column: a positive integer greater than 0 representing the 1-based horizontal origin of the text area
-    :param row: a positive integer greater than 0 representing the 1-based vertical origin of the text area
-    :param width: a positive integer greater than 0 representing the columns of the text area
-    :param height: a positive integer greater than 0 representing the rows of the text area
-    :param text: a string representing the text to draw in the terminal
-    :param text_area: a dictionary representing a text area's data
-    :param overwrite: a boolean representing whether to replace existing text within the text area with a space
+    :param column: (default None) a positive integer greater than 0,
+                    representing the 1-based horizontal origin of the text area
+    :param row: (default None) a positive integer greater than 0,
+                representing the 1-based vertical origin of the text area
+    :param width: (default None) a positive integer greater than 0 representing the columns of the text area
+    :param height: (default None) a positive integer greater than 0 representing the rows of the text area
+    :param text: (default None) a string representing the text to draw in the terminal
+    :param text_area: (default None) a dictionary representing a text area's data
+    :param overwrite: (default False) a boolean representing whether to replace all existing text within the text area
+    :param flush_output: (default True) a boolean representing whether to flush the output to stdout
     :precondition: column must be a positive integer greater than 0 within the bounds of the terminal
     :precondition: row must be a positive integer greater than 0 within the bounds of the terminal
     :precondition: width must be a positive integer greater than 0,
@@ -62,6 +67,7 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
     :precondition: the number of newlines in <text> must be less than <height>
     :precondition: text_area must be a dictionary holding valid text area data
     :precondition: overwrite must be a boolean
+    :precondition: flush_output must be a boolean
     :precondition: parameters, column, row, width, height, and text
                    or parameter, text_area must be given
     :postcondition: draw a text box to the terminal based on the <text_area> or the preceding parameters
@@ -70,12 +76,12 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
 
     >>> my_text_area = create_text_area(1, 1, 20, 1, "Hello, World")
     >>> draw_text_box(text_area=my_text_area)
-    \x1b[1;1HHello, World
+    \\x1b[1;1HHello, World
     >>> # Do same but without predefined text area
     >>> draw_text_box(1, 1, 20, 1, "Hello, World")
-    \x1b[1;1HHello, World
+    \\x1b[1;1HHello, World
     >>> draw_text_box(1, 2, 20, 2, "Hello, World", overwrite=True)
-    \x1b[2;1HHello, World        \x1b[3;1
+    \\x1b[2;1HHello, World        \\x1b[3;1
     """
     if not text_area:
         text_area = create_text_area(column, row, width, height, text)
@@ -92,7 +98,7 @@ def draw_text_box(column=None, row=None, width=None, height=None, text="", text_
         if overwrite:
             to_draw = to_draw.ljust(text_area["width"])
         print(to_draw, end="")
-    print("", end="", flush=True)
+    print("", end="", flush=flush_output)
     return text_area
 
 

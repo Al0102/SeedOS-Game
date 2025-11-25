@@ -14,18 +14,18 @@ def get_move_options():
     :return: a dictionary representing the available movement options and their ANSI escape code letter.
 
     >>> get_move_options() == {
-    ... "up": "A",
-    ... "down": "B",
-    ... "right": "C",
-    ... "left": "D",
-    ... "next_line": "E",
-    ... "previous_line": "F",
-    ... "column": "G",
-    ... "position": "H",
-    ... "scroll_up": "S",
-    ... "scroll_down": "T",
-    ... "save_position": "s",
-    ... "load_position": "u"}
+    ...     "up": "A",
+    ...     "down": "B",
+    ...     "right": "C",
+    ...     "left": "D",
+    ...     "next_line": "E",
+    ...     "previous_line": "F",
+    ...     "column": "G",
+    ...     "position": "H",
+    ...     "scroll_up": "S",
+    ...     "scroll_down": "T",
+    ...     "save_position": "s",
+    ...     "load_position": "u"}
     True
     """
     return {
@@ -57,11 +57,11 @@ def cursor_previous_line(amount=1):
     :postcondition: a newline will not be printed
 
     >>> cursor_previous_line()
-    \x1b[1F
+    \\x1b[1F
     >>> cursor_previous_line(0)
-    \x1b[0F
+    \\x1b[0F
     >>> cursor_previous_line(5)
-    \x1b[5F
+    \\x1b[5F
     """
     print(f"\033[{amount}{get_move_options()["previous_line"]}", end="", flush=True)
 
@@ -79,11 +79,11 @@ def cursor_next_line(amount=1):
     :postcondition: a newline will not be printed
 
     >>> cursor_next_line()
-    \x1b[1E
+    \\x1b[1E
     >>> cursor_next_line(0)
-    \x1b[0E
+    \\x1b[0E
     >>> cursor_next_line(5)
-    \x1b[5E
+    \\x1b[5E
     """
     print(f"\033[{amount}{get_move_options()["next_line"]}", end="", flush=True)
 
@@ -98,9 +98,9 @@ def set_cursor_visibility(show):
     :postcondition: a newline will not be printed
 
     >>> set_cursor_visibility(show=True)
-    \x1b[?25h
+    \\x1b[?25h
     >>> set_cursor_visibility(show=False)
-    \x1b[?25l
+    \\x1b[?25l
     """
     if show:
         print("\033[?25h", end="", flush=True)
@@ -123,11 +123,11 @@ def cursor_set(column, row):
     :postcondition: a newline will not be printed
 
     >>> cursor_set(1, 1)
-    \x1b[1;1H
+    \\x1b[1;1H
     >>> cursor_set(8, 90)
-    \x1b[90;8H
+    \\x1b[90;8H
     >>> cursor_set(15, 1)
-    \x1b[1;15H
+    \\x1b[1;15H
     """
     print(f"\033[{row};{column}{get_move_options()["position"]}", end="", flush=True)
 
@@ -146,11 +146,11 @@ def cursor_shift(direction, amount=1):
     :postcondition: a newline will not be printed
 
     >>> cursor_shift("down")
-    \x1b[1B
+    \\x1b[1B
     >>> cursor_shift("right", 5)
-    \x1b[5C
+    \\x1b[5C
     >>> cursor_shift("left", 20)
-    \x1b[20D
+    \\x1b[20D
     """
     print(f"\033[{amount}{get_move_options()[direction]}", end="", flush=True)
 
