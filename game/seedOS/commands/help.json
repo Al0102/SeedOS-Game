@@ -1,0 +1,13 @@
+[
+  {
+    "name": "help", "options": ["[command]"],
+    "short_description": "List available commands or get the documentation for a command",
+    "long_description": [
+      "Syntax:",
+      "  help",
+      "  - list all available commands",
+      "  help [command]",
+      "  - get the help documentation for [command]"
+    ]
+  }
+]
