@@ -30,7 +30,7 @@ def run_command(seed_system, command_data, tokens):
     if seed_system["aphid"]["privilege"] < command_data["privilege_required"]:
         status = "privilege_error"
         status_message = ("|Privilege too low|\n" +
-                          seed_system["aphid"]["privilege"] + " < " + command_data["privilege_required"])
+                          f"{seed_system['aphid']['privilege']} < {command_data['privilege_required']}")
     elif command_data["subcommands"]:
         try:
             next_command = command_data["subcommands"][tokens[0]]
@@ -52,7 +52,7 @@ def send_command(seed_system, command_string):
     tokens = command_string.strip().split()
     status = status_report(
         *run_command(seed_system, seed_system["command_root"], tokens))
-    seed_system["message_history"] += status_report()["message"].split("\n")
+    seed_system["message_history"] += status["message"].split("\n")
     return status
 
 
@@ -134,3 +134,25 @@ def status_report(code, message):
     message = style.style(message, *get_status_styles()[code])
     return {"code": code, "message": message}
 
+
+def main():
+    mock_seed = {
+        "aphid": {"name": "Clippy", "privilege": 0},
+        "message_history": [],
+        "command_root": create_command(
+            name="command_root",
+            run=lambda seed_system, tokens: print(f"{seed_system["aphid"]["name"]} reporting for duty.\n" +
+                                                  f"Picked up: {tokens}"),
+            privilege_required=0,
+            subcommands={
+                "say": create_command(
+                    name="say",
+                    run=lambda seed_system, tokens: print(seed_system["aphid"]["name"], *tokens),
+                    privilege_required=1)})}
+    print(
+        mock_seed["command_root"]["run"](mock_seed, ["coin", "paperclip", "windowpane"]))
+    print(send_command(mock_seed, "say hi"))
+
+
+if __name__ == '__main__':
+    main()
