@@ -30,15 +30,15 @@ def run_help(seed_system, tokens):
                 return ("system_error", "|File corrupted|\n" + "help.json decode error: " + error)
     command_documents = {
         data["name"]: data for data in help_json if data["name"] in seed_system["command_root"]["subcommands"].keys()}
-    if tokens:
+    if len(tokens) > 1:
+        status = "syntax_error"
+        status_message = "|'help' expects at most, 1 argument|\n" + f"{len(tokens)} > 1"
+    elif len(tokens) == 1:
         try:
-            command_help = command_documents[*tokens]
+            command_help = command_documents[tokens[0]]
         except KeyError:
-            status = "syntax_error",
+            status = "syntax_error"
             status_message = "|Could not find help document|\n" + tokens[0]
-        except TypeError:
-            status = "syntax_error",
-            status_message = "|'help' expects at most, 1 argument|\n" + f"{len(tokens)} > 1"
         else:
             seed_system["message_history"] += format_long_description(command_help).split("\n")
             status_message = f"Showed help documentation for {tokens[0]}"
@@ -118,8 +118,8 @@ def main():
             "name": "command_root", "subcommands": {"help": get_help_command()}
         }
     }
-    run_help(mock_seed_system, ["help"])
-    print(mock_seed_system["message_history"])
+    print(run_help(mock_seed_system, ["help"]))
+    print(*mock_seed_system["message_history"], sep="\n")
 
 
 if __name__ == "__main__":
