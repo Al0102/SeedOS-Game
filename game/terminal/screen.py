@@ -5,6 +5,12 @@ import os
 
 
 def clear_screen():
+    """
+    Clear the terminal screen based on the operating system.
+
+    :precondition: terminal must be run from a Windows or Posix style system
+    :postcondition: clear the terminal screen based on the operating system
+    """
     os.system("clear" if os.name == "posix" else "cls")
 
 
