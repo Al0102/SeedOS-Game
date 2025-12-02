@@ -5,7 +5,7 @@ from game.ansi_actions import cursor
 from game.terminal.screen import clear_screen
 
 
-def create_text_area(column, row, width, height, text):
+def create_text_area(column, row, width, height, text=""):
     """
     Get a text area dictionary that can be used for draw_text_box.
 
@@ -16,7 +16,7 @@ def create_text_area(column, row, width, height, text):
     :param row: a positive integer greater than 0 representing the 1-based vertical origin of the text area
     :param width: a positive integer greater than 0 representing the columns of the text area
     :param height: a positive integer greater than 0 representing the rows of the text area
-    :param text: a string representing the text to draw in the terminal
+    :param text: (default empty string) a string representing the text to draw in the terminal
     :precondition: column must be a positive integer greater than 0 within the bounds of the terminal
     :precondition: row must be a positive integer greater than 0 within the bounds of the terminal
     :precondition: width must be a positive integer greater than 0,
@@ -100,6 +100,46 @@ def draw_text_box(
         print(to_draw, end="")
     print("", end="", flush=flush_output)
     return text_area
+
+
+def draw_rectangle(
+        column=None, row=None, width=None, height=None,
+        text_area=None, flush_output=True):
+    """
+    :param column: a positive integer greater than 0,
+                   representing the 1-based horizontal origin of the text area
+    :param row: a positive integer greater than 0,
+                representing the 1-based vertical origin of the text area
+    :param width: a positive integer greater than 1 representing the columns of the text area
+    :param height: a positive integer greater than 1 representing the rows of the text area
+    :param text_area: (default None) a dictionary representing a text area's data
+    :param flush_output: (default True) a boolean representing whether to flush the output to stdout
+    :precondition: column must be a positive integer greater than 0 within the bounds of the terminal
+    :precondition: row must be a positive integer greater than 0 within the bounds of the terminal
+    :precondition: width must be a positive integer greater than 0,
+                   and small enough to avoid causing the text area to exceed the bounds of the terminal
+    :precondition: height must be a positive integer greater than 0,
+                   and small enough to avoid causing the text area to exceed the bounds of the terminal
+    :precondition: text_area must be a dictionary holding valid text area data
+    :precondition: flush_output must be a boolean
+    :precondition: parameters, column, row, width, height, and text
+                   or parameter, text_area must be given
+    :postcondition: draw a text box to the terminal based on the <text_area> or the preceding parameters
+
+    >>> draw_rectangle(1, 1, 2, 2)
+    \\x1b[1;1H..\\x1b[2;1H..
+    >>> draw_rectangle(1, 1, 3, 3)
+    \\x1b[1;1H._.\\x1b[2;1H| |\\x1b[3;1H` ´
+    """
+    if not text_area:
+        text_area = create_text_area(column, row, width, height)
+    justify_width = text_area["width"] - 1
+    middle_height = text_area["height"] - 2
+    text_area["text"] = (
+            ".".ljust(justify_width, "-") + ".\n" +
+            ("|".ljust(justify_width, " ") + "|\n") * middle_height +
+            "`".ljust(justify_width, "-") + "´")
+    draw_text_box(text_area=text_area, flush_output=flush_output)
 
 
 def main():
