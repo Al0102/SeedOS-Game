@@ -15,6 +15,7 @@ def get_status_styles():
     ...     "success": ("green", "dim"),
     ...     "system_error": ("background_red", "black", "rapid_blink"),
     ...     "syntax_error": ("red", "bold"),
+    ...     "argument_error": ("red", "bold"),
     ...     "privilege_error": ("yellow", "bold")}
     True
     """
@@ -35,10 +36,10 @@ def run_command(seed_system, command_data, tokens):
         try:
             next_command = command_data["subcommands"][tokens[0]]
         except IndexError:
-            status = "too_few_commands"
+            status = "argument_error"
             status_message = "|Expected a command|\nReceived nothing"
         except KeyError:
-            status = "invalid_command"
+            status = "invalid_error"
             status_message = "|Could not find command|\n" + tokens[0]
         else:
             status, status_message = run_command(seed_system, next_command, tokens[1:])
