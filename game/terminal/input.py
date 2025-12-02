@@ -4,8 +4,9 @@ OS dependent inputs with getch and msvcrt.
 import os
 from string import printable
 from game.ansi_actions import cursor
+from game.sound import effects
 from game.terminal.screen import get_screen_size, clear_screen
-from game.terminal.draw import draw_text_box
+from game.terminal.draw import draw_text_box, create_text_area
 
 
 def get_key_codes(system=os.name):
@@ -25,6 +26,7 @@ def get_key_codes(system=os.name):
     >>> get_key_codes("posix") == {
     ...     "enter": "\\n",
     ...     "backspace": "\\x7f",
+    ...     "tab": "\\t",
     ...     "escape": "\\x1b",
     ...     "up": "A",
     ...     "left": "D",
@@ -34,6 +36,7 @@ def get_key_codes(system=os.name):
     >>> get_key_codes("nt") == {
     ...     "enter": "\\r",
     ...     "backspace": "\\x08",
+    ...     "tab": "\\t",
     ...     "escape": "\\x1b",
     ...     "extend": "\\xe0",
     ...     "up": "H",
@@ -46,6 +49,7 @@ def get_key_codes(system=os.name):
         return {
             "enter": "\n",
             "backspace": "\x7f",
+            "tab": "\t",
             # Require 1-2 extra getch() calls to confirm
             "escape": "\x1b",
             # Notice that these are the same as the ANSI escape sequences
@@ -59,6 +63,7 @@ def get_key_codes(system=os.name):
             "enter": "\r",
             "backspace": "\x08",
             "escape": "\x1b",
+            "tab": "\t",
             # Require 1 extra getch() call after yielding \xe0
             "extend": "\xe0",
             # H: \x48, K: \x4B, M: \x4D, P: \x50
@@ -72,7 +77,17 @@ def get_key_codes(system=os.name):
         return None
 
 
-def init():
+def init_key_input():
+    """
+    Return a dictionary representing the info needed for "keyboard" input in the terminal
+
+    The key input dictionary has the following key-value pairs:
+        "key_codes": <os dependent dictionary of key codes and their names>\n
+        "key_get": <os dependent function for adding the next key press to "input_queue">\n
+        "input_queue": <list backlog of inputs>
+
+    :return: a dictionary representing the info needed for "keyboard" input in the terminal
+    """
     if os.name == "posix":
         try:
             from getch import getch
@@ -125,7 +140,7 @@ def pull_input(terminal_input, amount=1, flush=False):
     """
     Pop the next <amount> inputs in the queue.
 
-    :param terminal_input: a dictionary representing the terminal input info created by init()
+    :param terminal_input: a dictionary representing the terminal input info created by init_key_input()
     :param amount: an integer greater than or equal to -1 representing whether the number of inputs to queue
     :param flush: a boolean representing whether to clear the queue after getting the input
     :precondition: terminal_input must be a dictionary of terminal input info with the key "input_queue"
@@ -158,68 +173,68 @@ def pull_input(terminal_input, amount=1, flush=False):
     return inputs
 
 
-def text_input(terminal_input, column, row, max_width=None, hide=False):
+def start_text_input(column, row, max_width=None, hide=False):
     """
-    Return text from the user similarly to the built-in input.
+    Return a function for getting text input from the user.
 
     If not hidden, typing will start at (<column>, <row>), and
     start hiding (clip) characters after <max_width> characters are inputted.
 
-    :param terminal_input: a dictionary representing the terminal input info created by init()
     :param column: an integer representing the 1-based horizontal origin of the text input
     :param row: an integer representing the 1-based vertical origin of the text_input
     :param max_width: an integer representing the maximum width of the input area
     :param hide: a boolean representing whether to show the user input being typed
-    :precondition: terminal_input must be a dictionary of terminal input info created by init()
+    :precondition: terminal_input must be a dictionary of valid terminal input info
     :precondition: column must be a positive integer greater than 0 and less than the width of the terminal
     :precondition: row must be a positive integer greater than 0 and less than the height of the terminal
     :precondition: max_width must be a positive integer larger than 0,
                    or None for no constraints on typing length
     :precondition: hide must be a boolean
-    :postcondition: get the text input from the user
+    :postcondition: get a function for getting text input from the user
     :postcondition: the text input is taken from function call until "enter" is detected
-    :return: a string representing the text input from the user,
-             or None if KeyboardInterrupt occurred
+    :return: a function representing a text_input prompt for the user
     """
     if not max_width:
         max_width = get_screen_size()[0] - column - 1
-    pull_input(terminal_input, amount=0, flush=True)
+    text_area = create_text_area(column=column, row=row, width=max_width, height=1)
     string_input = []
     cursor_at = 0
     draw_index = 0
-    while True:
-        draw_text_box(
-            column, row, max_width, 1,
-            "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)]),
-            overwrite=True)
-        cursor.cursor_set(
-            min(max_width + column, max(column, column + cursor_at - draw_index)),
-            row)
-        try:
-            inputted = terminal_input["key_get"](terminal_input)
-        except KeyboardInterrupt:
-            return None
-        if inputted == "enter":
+
+    def update_text_input(key_press):
+        """
+        Get text input from the user.
+
+        :param key_press: a string representing the key code of the pressed key input
+        :precondition: key_press must be a valid key code string
+        :postcondition: get text input from the user, or continue the prompt
+        :postcondition: the prompt is completed when "enter" is passed
+        :return: a string representing the text input from the user,
+        """
+        nonlocal string_input, cursor_at, draw_index, text_area
+        if not hide:
+            draw_index = max(0, min(len(string_input) - max_width, cursor_at - max_width + draw_index))
+            text_area["text"] = "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)])
+            draw_text_box(text_area=text_area, overwrite=True)
+            cursor.cursor_set(min(max_width + column, max(column, column + cursor_at - draw_index)), row)
+        if key_press == "enter":
             cursor.cursor_set(column, row + 1)
             return string_input
-        elif inputted == "backspace" and len(string_input) > 0 and cursor_at > 0:
+        elif key_press == "backspace" and len(string_input) > 0 and cursor_at > 0:
             string_input.pop(cursor_at - 1)
             cursor_at -= 1
-        elif inputted == "right":
+        elif key_press == "right":
             cursor_at = min(len(string_input), cursor_at + 1)
-        elif inputted == "left":
+        elif key_press == "left":
             cursor_at = max(0, cursor_at - 1)
-        elif inputted in printable:
-            string_input.insert(cursor_at, inputted)
+        elif key_press in printable:
+            string_input.insert(cursor_at, key_press)
             cursor_at = min(len(string_input), cursor_at + 1)
         else:
-            continue
-        if hide:
-            continue
-        draw_index = max(
-            0, min(
-                len(string_input) - max_width,
-                cursor_at - max_width + draw_index))
+            effects.get_effects()["honk"].play()
+        return None
+
+    return update_text_input
 
 
 def main():
@@ -228,23 +243,38 @@ def main():
     """
     clear_screen()
     print("Press escape or tab to go to test text_input")
-    key_input = init()
+    key_input = init_key_input()
     while True:
         key_input["key_get"](key_input)
-        inputted = pull_input(key_input)[0]
-        if not inputted:
+        key_press = pull_input(key_input)[0]
+        if not key_press:
             continue
-        elif inputted == "escape":
+        elif key_press in ("escape", "tab", "backspace"):
             break
-        elif inputted in ("left", "right", "up", "down"):
-            cursor.cursor_shift(inputted)
+        elif key_press in ("left", "right", "up", "down"):
+            cursor.cursor_shift(key_press)
         else:
-            print(inputted, end="", flush=True)
+            print(key_press, end="", flush=True)
     draw_text_box(text_area={
         "column": 1, "row": 10, "width": 12, "height": 1,
         "text": "User input:"
     })
-    print(text_input(key_input, 13, 10, 25))
+    text_input = start_text_input(13, 10, 25, hide=False)
+    while True:
+        key_input["key_get"](key_input)
+        pressed = pull_input(key_input)[0]
+        if pressed == "tab":
+            break
+        prompt_result = text_input(pressed)
+
+        draw_text_box(text_area={
+            "column": 30, "row": 2, "width": 12, "height": 1,
+            "text": pressed}, flush_output=True)
+        if not prompt_result is None:
+            draw_text_box(text_area={
+                "column": 1, "row": 2, "width": 12, "height": 1,
+                "text": "\n".join(prompt_result)})
+            break
 
 
 if __name__ == '__main__':
