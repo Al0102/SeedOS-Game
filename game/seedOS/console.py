@@ -1,7 +1,8 @@
 """
 Main user interaction with the system via a console.
 """
-from game.terminal import draw
+from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
+from game.terminal.input import start_text_input, init_key_input, pull_input
 from game.terminal.screen import get_screen_size, clear_screen
 
 
@@ -53,18 +54,45 @@ def display_message_history(seed_system, offset=0):
     messages.reverse()
     # TODO move justify to draw.py
     messages = ["" for _ in range(size[1] - message_count)] + messages
-    text_area = draw.create_text_area(
-        4, 2, size[0], size[1],
-        "\n".join(messages))
-    draw.draw_text_box(text_area=text_area, overwrite=True)
+    text_area = create_text_area(
+        column=4, row=2, width=size[0], height=size[1],
+        text="\n".join(messages))
+    draw_text_box(text_area=text_area, overwrite=True)
 
 
-def draw_prompt():
-    pass
+def draw_user_prompt():
+    size = get_console_dimensions()["input"]
+    draw_rectangle(
+        column=0, row=get_screen_size()[1] - size[1] + 1, width=size[0], height=size[1] + 1,
+        flush_output=False)
+    draw_text_box(column=1, row=get_screen_size()[1] - 1, width=size[0] - 2, height=1, text="", overwrite=True)
 
 
-def prompt_user():
-    pass
+def start_prompt_user():
+    """
+    Return a function for prompting the user for a command in the SeedOS console.
+
+    :return:
+    """
+    text_input = start_text_input(
+        column=3, row=get_screen_size()[1] - 1, max_width=get_console_dimensions()["input"][0] - 3)
+    draw_user_prompt()
+
+    def update_prompt(key_press):
+        """
+        Update the text_input for the prompt and draws it's border.
+
+        :param key_press: a string representing the key code of the pressed key input
+        :precondition: key_press must be a valid key code string
+        :postcondition: update the text input prompt for the user
+        :postcondition: the text_input will return a string of the user input or None
+        :return: a string representing the result of teh text input from the user,
+                 or None if the input is unfinished
+        """
+        draw_user_prompt()
+        return text_input(key_press)
+
+    return update_prompt
 
 
 def main():
@@ -74,10 +102,24 @@ def main():
     clear_screen()
     mock_seed = {"message_history": ["Hello", "Welcome to SeedOS:", "Grow the system, Your way"]}
     display_message_history(mock_seed)
-    input()
+    # input()
     display_message_history(mock_seed, 1)
-    input()
+    # input()
     display_message_history(mock_seed, 2)
+
+    key_input = init_key_input()
+    update_console_prompt = start_prompt_user()
+    while True:
+        if key_input["key_get"](key_input) == "tab":
+            break
+        result = update_console_prompt(pull_input(key_input)[0])
+        print("", end="", flush=True)
+        if result is None:
+            continue
+        draw_text_box(1, 1, get_console_dimensions()["output"][0], 5, text=f"\n\n{result}", overwrite=True)
+        if result == "quit":
+            break
+        update_console_prompt = start_prompt_user()
 
 
 if __name__ == '__main__':
