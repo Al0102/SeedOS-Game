@@ -53,10 +53,10 @@ def get_key_codes(system=os.name):
             # Require 1-2 extra getch() calls to confirm
             "escape": "\x1b",
             # Notice that these are the same as the ANSI escape sequences
-            "up": "A",
-            "left": "D",
-            "right": "C",
-            "down": "B"
+            "up": "escapeA",
+            "left": "escapeD",
+            "right": "escapeC",
+            "down": "escapeB"
         }
     elif system == "nt":
         return {
@@ -67,10 +67,10 @@ def get_key_codes(system=os.name):
             # Require 1 extra getch() call after yielding \xe0
             "extend": "\xe0",
             # H: \x48, K: \x4B, M: \x4D, P: \x50
-            "up": "H",
-            "left": "K",
-            "right": "M",
-            "down": "P"
+            "up": "extendH",
+            "left": "extendK",
+            "right": "extendM",
+            "down": "extendP"
         }
     else:
         print("Unsupported operating system")
@@ -101,7 +101,7 @@ def init_key_input():
             if code == input_info["key_codes"]["escape"]:
                 code = getch()
                 if code != input_info["key_codes"]["escape"]:
-                    code = getch()
+                    code = "escape" + getch()
             for key_name, key_code in input_info["key_codes"].items():
                 if code == key_code:
                     input_info["input_queue"].append(key_name)
@@ -117,7 +117,7 @@ def init_key_input():
         def key_get(input_info):
             code = getwch()
             if code == input_info["key_codes"]["extend"]:
-                code = getwch()
+                code = "extend" + getwch()
             for key_name, key_code in input_info["key_codes"].items():
                 if code == key_code:
                     input_info["input_queue"].append(key_name)
@@ -141,7 +141,7 @@ def pull_input(terminal_input, amount=1, flush=False):
     Pop the next <amount> inputs in the queue.
 
     :param terminal_input: a dictionary representing the terminal input info created by init_key_input()
-    :param amount: an integer greater than or equal to -1 representing whether the number of inputs to queue
+    :param amount: an integer greater than or equal to -1 representing the number of inputs to pull
     :param flush: a boolean representing whether to clear the queue after getting the input
     :precondition: terminal_input must be a dictionary of terminal input info with the key "input_queue"
     :precondition: amount must be an integer greater than or equal to -1
@@ -212,11 +212,6 @@ def start_text_input(column, row, max_width=None, hide=False):
         :return: a string representing the text input from the user,
         """
         nonlocal string_input, cursor_at, draw_index, text_area
-        if not hide:
-            draw_index = max(0, min(len(string_input) - max_width, cursor_at - max_width + draw_index))
-            text_area["text"] = "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)])
-            draw_text_box(text_area=text_area, overwrite=True)
-            cursor.cursor_set(min(max_width + column, max(column, column + cursor_at - draw_index)), row)
         if key_press == "enter":
             cursor.cursor_set(column, row + 1)
             return string_input
@@ -232,6 +227,11 @@ def start_text_input(column, row, max_width=None, hide=False):
             cursor_at = min(len(string_input), cursor_at + 1)
         else:
             effects.get_effects()["honk"].play()
+        if not hide:
+            draw_index = max(0, min(len(string_input) - max_width, cursor_at - max_width + draw_index))
+            text_area["text"] = "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)])
+            draw_text_box(text_area=text_area, overwrite=True)
+            cursor.cursor_set(min(max_width + column, max(column, column + cursor_at - draw_index)), row)
         return None
 
     return update_text_input
