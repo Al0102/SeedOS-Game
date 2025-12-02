@@ -19,15 +19,13 @@ def get_help_command():
 def run_help(seed_system, tokens):
     status = "success"
     try:
-        open(relative_path("seedOS/commands/help.json"), "r")
-    except FileNotFoundError:
-        return ("system_error", "|File corrupted|\nhelp.json not found")
-    else:
         with open(relative_path("seedOS/commands/help.json"), "r") as help_docs_file:
             try:
                 help_json = json.load(help_docs_file)
             except json.JSONDecodeError as error:
-                return ("system_error", "|File corrupted|\n" + "help.json decode error: " + error)
+                return ("system_error", f"|File corrupted|\nhelp.json decode error: {error}")
+    except FileNotFoundError:
+        return ("system_error", "|File corrupted|\nhelp.json not found")
     command_documents = {
         data["name"]: data for data in help_json if data["name"] in seed_system["command_root"]["subcommands"].keys()}
     if len(tokens) > 1:
