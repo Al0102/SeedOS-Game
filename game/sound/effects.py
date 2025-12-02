@@ -7,12 +7,24 @@ from game import relative_path
 
 
 def get_effect_names():
+    """
+    Return a tuple of existing sound effect names.
+
+    :postcondition: get the names of existing sound effects
+    :return: a tuple representing the names of existing sound effects
+
+    >>> get_effect_names() == (
+    ... "mouse_click",
+    ... "honk")
+    True
+    """
     return (
         "mouse_click",
+        "honk"
     )
 
 
-def get_effects(path: str = "assets"):
+def init_effects(path="assets"):
     """
     Return a dictionary of AudioPlayers for sound effects from get_effect_names().
 
@@ -31,11 +43,36 @@ def get_effects(path: str = "assets"):
         for effect_name in get_effect_names()}
 
 
+def get_effects(sound_effects={}):
+    """
+     Return a dictionary of AudioPlayers.
+
+    Initializes persistent AudioPlayers if <sound_effects> is empty.
+
+    :param sound_effects: a dictionary representing the group of sound effects to add to
+    :precondition: sound_effects must be a dictionary
+    :postcondition: get <sound_effects> updated with predefined AudioPlayers if they don't already exist
+    :return: a dictionary representing the combined group of sound effects
+    """
+    if not set(init_effects()) <= set(sound_effects):
+        sound_effects.update(init_effects())
+    return sound_effects
+
+
 def main():
     """
     Drive the program.
     """
-    get_effects()["mouse_click"].play(block=True)
+    for sound_effect in get_effects().values():
+        sound_effect.play(block=True)
+
+    input()
+    get_effects()["mouse_click"].play()
+    input()
+    get_effects()["mouse_click"].play()
+    input()
+    get_effects()["mouse_click"].play()
+    input()
 
 
 if __name__ == '__main__':
