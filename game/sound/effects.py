@@ -1,6 +1,8 @@
 """
 Play preset sound effects.
 """
+import random
+
 from audioplayer import AudioPlayer
 
 from game import relative_path
@@ -57,6 +59,27 @@ def get_effects(sound_effects={}):
     if not set(init_effects()) <= set(sound_effects):
         sound_effects.update(init_effects())
     return sound_effects
+
+
+def chance_sound(effect_name, chance, sound_effects=None):
+    """
+    Play a sound effect based on random chance.
+
+    Can be used to space sounds out or make more natural rhythms.
+
+    :param effect_name: a string representing the name of the effect to play
+    :param chance: the chance from [0, 1] that the sound effect will be played
+    :param sound_effects: a dictionary representing the group of sound effects to add to
+    :precondition: effect_name must be a string in the keys of the effects dictionary being used
+    :precondition: sound_effects must be a valid, non-empty dictionary of form: <name>: <AudioPlayer>,
+                   or None if using the default effects dictionary
+    :postcondition: play <effect name> from <sound_effects> or default dictionary based on <chance>
+    """
+    if random.random() < chance:
+        if sound_effects:
+            sound_effects[effect_name].play()
+        else:
+            get_effects()[effect_name].play()
 
 
 def main():
