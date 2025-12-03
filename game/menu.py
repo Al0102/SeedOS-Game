@@ -108,6 +108,12 @@ def create_menu(column, row, *options, default=0):
         "update_menu": update_menu}
 
 
+def centered_menu_position(*options):
+    menu_column = (get_screen_size()[0] - longest_string(options)[1]) // 2
+    menu_row = (get_screen_size()[1] - len(options)) // 2
+    return (menu_column, menu_row)
+
+
 def main():
     """
     Drive the program.
