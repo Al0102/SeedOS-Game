@@ -1,12 +1,14 @@
 """
 The entry point for the game.
 """
-import pathlib
+import pathlib, json
 
 from game import relative_path
+from game.ansi_actions.cursor import cursor_set
 from game.ansi_actions.style import style
 from game.scene.scene import get_scenes
 from game.terminal import input as terminal_input
+from game.terminal.screen import get_screen_size
 
 
 def setup_game():
@@ -29,7 +31,8 @@ def setup_game():
         "key_input": terminal_input.init_key_input(),
         "saves_path": get_user_data_folder(),
         "previous_scene": None,
-        "active_scene": get_scenes()["startup"]}
+        "active_scene": get_scenes()["startup"],
+        "seed_system": None}
     return game_data
 
 
@@ -58,25 +61,62 @@ def game_loop(game_data):
 
 
 def get_user_data_folder():
+    """
+    Get the path to the local data folder.
+
+    Attempt to create one if no folder exists.
+
+    :postcondition: get the path to the local data folder
+    :postcondition: attempt to create a local data folder if it does not already exist
+    :return: a path-like string representing the path to the local data folder,
+             or None if no folder exists/can be created
+    """
     save_folder = pathlib.Path(relative_path("local_data"))
+    status = "Nothing loaded."
     try:
         save_folder.mkdir()
     except FileExistsError:
-        print("Local data folder found, loading saves.")
+        status = "Local data folder found, loading saves."
     except PermissionError:
-        print("Unable to create local data folder, using temporary save data.")
+        status = "Unable to create local data folder, using temporary save data."
         save_folder = None
     else:
-        print(f"Local data folder created at: {save_folder}")
+        status = f"Local data folder created at: {save_folder}"
     finally:
+        cursor_set(get_screen_size()[0] - len(status), get_screen_size()[1])
+        print(status, end="")
         return save_folder
 
 
-def load_game_save():
-    pass
+def load_saves_file_paths(game_data):
+    files = []
+    status = "success"
+    try:
+        files = game_data["saves_path"].glob("**/*")
+    except ValueError:
+        status = "local data folder does not exist"
+    else:
+        files = [save_file for save_file in files if save_file.is_file() and save_file.suffix == ".json"]
+    finally:
+        cursor_set(get_screen_size()[0] - len(status), get_screen_size()[1])
+        print(status, end="")
+        return files
 
 
-
+def load_save_from_file(file_path):
+    status = "success"
+    save_data = None
+    try:
+        with open(file_path, "r") as save_file:
+            save_data = json.load(save_file)
+    except FileNotFoundError:
+        status = f"file does not exist: {file_path}"
+    except json.JSONDecodeError:
+        status = f"file data corrupted: {file_path}"
+    finally:
+        cursor_set(get_screen_size()[0] - len(status), get_screen_size()[1])
+        print(status, end="")
+        return save_data
 
 
 def main():
