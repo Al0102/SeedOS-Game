@@ -1,10 +1,10 @@
 """
 Main menu: Start or Quit.
 """
-from game.menu import create_menu
+from game.menu import create_menu, centered_menu_position
+from game.sound.effects import chance_sound
 from game.terminal.input import pull_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
-from game.utilities import longest_string
 
 
 def get_main_menu_scene():
@@ -23,9 +23,7 @@ def get_main_menu_scene():
     :return: a dictionary representing the data for the main menu scene
     """
     options = ("Start", "Quit")
-    menu_position = get_screen_size()
-    menu_width = (menu_position[0] - longest_string(options)[1]) // 2
-    menu_height = (menu_position[1] - len(options)) // 2
+    menu_column, menu_row = centered_menu_position(options)
     menu = {}
 
     def open_main_menu(_):
@@ -36,7 +34,7 @@ def get_main_menu_scene():
         """
         nonlocal menu
         menu = create_menu(
-            menu_width, menu_height,
+            menu_column, menu_row,
             *options)
         clear_screen()
         menu["draw_menu"]()
@@ -55,9 +53,10 @@ def get_main_menu_scene():
         while True:
             poll_key_press(game_data["key_input"])
             inputted = pull_input(game_data["key_input"], flush=True)[0]
+            chance_sound("mouse_click", 0.5)
             selection = menu["update_menu"](inputted)
             if selection == "Start":
-                return "seedOS_console" # TODO change to seedOS_login
+                return "seedos_login"
             if selection == "Quit":
                 return "quit"
 
