@@ -2,7 +2,7 @@
 Main user interaction with the system via a console.
 """
 from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
-from game.terminal.input import start_text_input, init_key_input, pull_input
+from game.terminal.input import start_text_input, init_key_input, pull_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
 
 
@@ -110,9 +110,10 @@ def main():
     key_input = init_key_input()
     update_console_prompt = start_prompt_user()
     while True:
-        if key_input["key_get"](key_input) == "tab":
+        inputted = poll_key_press(key_input)
+        if inputted == "tab":
             break
-        result = update_console_prompt(pull_input(key_input)[0])
+        result = update_console_prompt(inputted)
         print("", end="", flush=True)
         if result is None:
             continue

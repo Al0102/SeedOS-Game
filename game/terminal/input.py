@@ -107,7 +107,6 @@ def init_key_input():
                     input_info["input_queue"].append(key_name)
                     return key_name
             # Normal characters and undefined actions
-            input_info["input_queue"].append(code)
             return code
 
     elif os.name == "nt":
@@ -123,7 +122,6 @@ def init_key_input():
                     input_info["input_queue"].append(key_name)
                     return key_name
             # Normal characters and undefined actions
-            input_info["input_queue"].append(code)
             return code
     else:
         print("Unsupported operating system: use Windows or Unix system")
@@ -136,14 +134,29 @@ def init_key_input():
     }
 
 
-def pull_input(terminal_input, amount=1, flush=False):
+def poll_key_press(input_info):
+    """
+    Poll the next key press.
+
+    :param input_info: a dictionary representing the terminal input info created by init_key_input()
+    :precondition: input_info must be a well-formed dictionary of input info with the keys "key_get" and "input_queue"
+    :postcondition: poll a key press via <input_info["key_get"]>
+    :postcondition: inputted key code will be appended to <input_info["input_queue"]>
+    :return: the key code of the polled input from <input_info["key_get"]>
+    """
+    inputted = input_info["key_get"](input_info)
+    input_info["input_queue"].append(inputted)
+    return inputted
+
+
+def pull_input(input_info, amount=1, flush=False):
     """
     Pop the next <amount> inputs in the queue.
 
-    :param terminal_input: a dictionary representing the terminal input info created by init_key_input()
+    :param input_info: a dictionary representing the terminal input info created by init_key_input()
     :param amount: an integer greater than or equal to -1 representing the number of inputs to pull
     :param flush: a boolean representing whether to clear the queue after getting the input
-    :precondition: terminal_input must be a dictionary of terminal input info with the key "input_queue"
+    :precondition: input_info must be a dictionary of terminal input info with the key "input_queue"
     :precondition: amount must be an integer greater than or equal to -1
     :precondition: flush must be a boolean
     :postcondition: get a list of input names from the queue and pop them
@@ -162,14 +175,14 @@ def pull_input(terminal_input, amount=1, flush=False):
     >>> input_dictionary["input_queue"]
     []
     """
-    queue_length = len(terminal_input["input_queue"])
+    queue_length = len(input_info["input_queue"])
     if queue_length < amount or amount == 0:
         return None
     if amount == -1:
         amount = queue_length
-    inputs = [terminal_input["input_queue"].pop(0) for _ in range(amount)]
+    inputs = [input_info["input_queue"].pop(0) for _ in range(amount)]
     if flush:
-        terminal_input["input_queue"].clear()
+        input_info["input_queue"].clear()
     return inputs
 
 
@@ -184,7 +197,6 @@ def start_text_input(column, row, max_width=None, hide=False):
     :param row: an integer representing the 1-based vertical origin of the text_input
     :param max_width: an integer representing the maximum width of the input area
     :param hide: a boolean representing whether to show the user input being typed
-    :precondition: terminal_input must be a dictionary of valid terminal input info
     :precondition: column must be a positive integer greater than 0 and less than the width of the terminal
     :precondition: row must be a positive integer greater than 0 and less than the height of the terminal
     :precondition: max_width must be a positive integer larger than 0,
@@ -214,7 +226,7 @@ def start_text_input(column, row, max_width=None, hide=False):
         nonlocal string_input, cursor_at, draw_index, text_area
         if key_press == "enter":
             cursor.cursor_set(column, row + 1)
-            return string_input
+            return "".join(string_input)
         elif key_press == "backspace" and len(string_input) > 0 and cursor_at > 0:
             string_input.pop(cursor_at - 1)
             cursor_at -= 1
@@ -245,7 +257,7 @@ def main():
     print("Press escape or tab to go to test text_input")
     key_input = init_key_input()
     while True:
-        key_input["key_get"](key_input)
+        poll_key_press(key_input)
         key_press = pull_input(key_input)[0]
         if not key_press:
             continue
@@ -261,7 +273,7 @@ def main():
     })
     text_input = start_text_input(13, 10, 25, hide=False)
     while True:
-        key_input["key_get"](key_input)
+        poll_key_press(key_input)
         pressed = pull_input(key_input)[0]
         if pressed == "tab":
             break

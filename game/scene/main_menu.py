@@ -2,7 +2,7 @@
 Main menu: Start or Quit.
 """
 from game.menu import create_menu
-from game.terminal.input import pull_input
+from game.terminal.input import pull_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
 from game.utilities import longest_string
 
@@ -53,7 +53,7 @@ def get_main_menu_scene():
                  or None to signify game exit
         """
         while True:
-            game_data["key_input"]["key_get"](game_data["key_input"])
+            poll_key_press(game_data["key_input"])
             inputted = pull_input(game_data["key_input"], flush=True)[0]
             selection = menu["update_menu"](inputted)
             if selection == "Start":

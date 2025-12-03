@@ -2,7 +2,7 @@
 Startup boot sequence and cool stuff.
 """
 from game.terminal.draw import create_text_area, draw_text_box
-from game.terminal.input import pull_input, start_text_input
+from game.terminal.input import pull_input, start_text_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
 
 
@@ -49,7 +49,7 @@ def get_startup_scene():
                 "Enter 'y' to continue, 'n' to exit, and any key to reload screen size.\n"
                 "> ")
             draw_text_box(text_area=prompt_text_area, overwrite=True)
-            game_data["key_input"]["key_get"](game_data["key_input"])
+            poll_key_press(game_data["key_input"])
             inputted = pull_input(game_data["key_input"], flush=True)[0]
             choice = update_confirm_prompt(inputted)
             if choice is None:
