@@ -12,8 +12,8 @@ def get_scenes(scenes={}):
     {
         "startup",
         "main_menu",
-        "seedOS_login"
-        "seedOS_console",
+        "seedos_login"
+        "seedos_console",
     }
 
     :param scenes: a dictionary representing the game's scenes
