@@ -77,7 +77,7 @@ def create_menu(column, row, *options, default=0):
         options_draw = options.copy()
         options_draw[selected_index] = f"< {options_draw[selected_index]} >"
         text_area["text"] = '\n'.join(map(lambda option: option.center(longest_option + 4), options_draw))
-        draw_text_box(text_area=text_area, overwrite=True, flush_output=False)
+        draw_text_box(text_area=text_area, overwrite=True)
 
     def next_option():
         """
