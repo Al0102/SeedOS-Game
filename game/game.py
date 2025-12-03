@@ -4,7 +4,8 @@ The entry point for the game.
 import pathlib
 
 from game import relative_path
-from game.scene import scenes
+from game.ansi_actions.style import style
+from game.scene.scene import get_scenes
 from game.terminal import input as terminal_input
 
 
@@ -28,7 +29,7 @@ def setup_game():
         "key_input": terminal_input.init_key_input(),
         "saves_path": get_user_data_folder(),
         "previous_scene": None,
-        "active_scene": scenes.bootup.get_scene()}
+        "active_scene": get_scenes()["startup"]}
     return game_data
 
 
@@ -40,17 +41,20 @@ def game_loop(game_data):
     :precondition game_data: must be a well-formed dictionary of game data
     :postcondition: run the game
     """
-    game_data["active_scene"]["open"](game_data)
     while True:
+        if not game_data["active_scene"]["open"] is None:
+            game_data["active_scene"]["open"](game_data)
         next_scene = game_data["active_scene"]["update"](game_data)
         if not game_data["active_scene"]["exit"] is None:
             game_data["active_scene"]["exit"](game_data)
         if next_scene is None:
             return
         game_data["previous_scene"] = game_data["active_scene"]
-        game_data["active_scene"] = next_scene
-        if not game_data["active_scene"]["open"] is None:
-            game_data["active_scene"]["open"](game_data)
+        try:
+            game_data["active_scene"] = get_scenes()[next_scene]
+        except KeyError:
+            print(style(f"Scene is not defined: {next_scene}", "red"))
+            return
 
 
 def get_user_data_folder():
@@ -79,7 +83,8 @@ def main():
     """
     Drive the program.
     """
-    pass
+    game_data = setup_game()
+    game_loop(game_data)
 
 
 if __name__ == "__main__":
