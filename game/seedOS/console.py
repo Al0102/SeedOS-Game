@@ -117,7 +117,9 @@ def main():
         print("", end="", flush=True)
         if result is None:
             continue
-        draw_text_box(1, 1, get_console_dimensions()["output"][0], 5, text=f"\n\n{result}", overwrite=True)
+        draw_text_box(
+            1, 1, get_console_dimensions()["output"][0], 5,
+            text=f"\n\n{result}", overwrite=True)
         if result == "quit":
             break
         update_console_prompt = start_prompt_user()
