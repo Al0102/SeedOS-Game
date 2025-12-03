@@ -68,7 +68,7 @@ def chance_sound(effect_name, chance, sound_effects=None):
     Can be used to space sounds out or make more natural rhythms.
 
     :param effect_name: a string representing the name of the effect to play
-    :param chance: the chance from [0, 1] that the sound effect will be played
+    :param chance: a float representing the chance from [0, 1] that the sound effect will be played
     :param sound_effects: a dictionary representing the group of sound effects to add to
     :precondition: effect_name must be a string in the keys of the effects dictionary being used
     :precondition: sound_effects must be a valid, non-empty dictionary of form: <name>: <AudioPlayer>,
