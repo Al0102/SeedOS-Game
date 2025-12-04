@@ -50,7 +50,7 @@ def run_command(seed_system, command_data, tokens):
 
 
 def send_command(seed_system, command_string):
-    send_message(seed_system, command_string)
+    send_message(seed_system, f"> command_string")
     tokens = command_string.strip().split()
     status = status_report(
         *run_command(seed_system, seed_system["command_root"], tokens))
