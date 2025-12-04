@@ -76,7 +76,7 @@ def create_menu(column, row, *options, default=0):
         nonlocal text_area
         options_draw = options.copy()
         options_draw[selected_index] = f"< {options_draw[selected_index]} >"
-        text_area["text"] = '\n'.join(map(lambda option: option.center(longest_option + 4), options_draw))
+        text_area["text"] = '\n'.join(map(lambda option: option.ljust(longest_option + 4), options_draw))
         draw_text_box(text_area=text_area, overwrite=True)
 
     def next_option():
@@ -109,7 +109,7 @@ def create_menu(column, row, *options, default=0):
 
 
 def centered_menu_position(*options):
-    menu_column = (get_screen_size()[0] - longest_string(options)[1]) // 2
+    menu_column = get_screen_size()[0] // 2 - longest_string(options)[1]
     menu_row = (get_screen_size()[1] - len(options)) // 2
     return (menu_column, menu_row)
 
