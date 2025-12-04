@@ -22,7 +22,8 @@ def get_effect_names():
     """
     return (
         "mouse_click",
-        "honk"
+        "honk",
+        "music"
     )
 
 
@@ -77,9 +78,9 @@ def chance_sound(effect_name, chance, sound_effects=None):
     """
     if random.random() < chance:
         if sound_effects:
-            sound_effects[effect_name].play()
+            sound_effects[effect_name].play(block=False)
         else:
-            get_effects()[effect_name].play()
+            get_effects()[effect_name].play(block=False)
 
 
 def main():
