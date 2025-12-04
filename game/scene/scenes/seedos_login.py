@@ -52,6 +52,17 @@ def get_seedos_login_scene():
         print("Choose a save:", end="", flush=False)
         menu["draw_menu"]()
 
+    def exit_seedos_login(game_data):
+        """
+        Cleans the scene before it is switched.
+
+        :param game_data: a dictionary representing the data needed to run the game
+        :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: exit the seedOS login scene
+        """
+        if game_data["seed_system"]:
+            game_data["seed_system"]["message_history"].clear()
+
     def update_seedos_login(game_data):
         """
         Return the next scene to run after the seedOS login.
@@ -88,5 +99,5 @@ def get_seedos_login_scene():
         "name": "seedos_login",
         "open": open_seedos_login,
         "update": update_seedos_login,
-        "exit": None}
+        "exit": exit_seedos_login}
 

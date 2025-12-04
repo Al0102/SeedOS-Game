@@ -40,6 +40,14 @@ def get_seedos_console_scene():
         get_effects()["mouse_click"].play(loop=True)
         get_effects()["mouse_click"].pause()
 
+    def exit_seedos_console(_):
+        """
+        Cleans the scene before it is switched.
+
+        :postcondition: exit the seedOS console scene
+        """
+        get_effects()["mouse_click"].stop()
+
     def update_seedos_console(game_data):
         """
         Return the next scene to run after the seedOS console.
@@ -59,7 +67,7 @@ def get_seedos_console_scene():
             get_effects()["mouse_click"].pause()
             inputted = poll_key_press(game_data["key_input"])
             get_effects()["mouse_click"].resume()
-            sleep(0.01)
+            sleep(0.05)
             inputted_prompt = prompt_user(inputted)
             if inputted_prompt is None:
                 continue
@@ -75,5 +83,5 @@ def get_seedos_console_scene():
         "name": "seedos_console",
         "open": open_seedos_console,
         "update": update_seedos_console,
-        "exit": None}
+        "exit": exit_seedos_console}
 

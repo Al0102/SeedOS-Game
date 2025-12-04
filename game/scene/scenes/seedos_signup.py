@@ -51,6 +51,17 @@ def get_seedos_signup_scene():
         get_effects()["mouse_click"].pause()
         next(signup_sequence)
 
+    def exit_seedos_signup(game_data):
+        """
+        Cleans the scene before it is switched.
+
+        :param game_data: a dictionary representing the data needed to run the game
+        :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: exit the seedOS signup scene
+        """
+        game_data["seed_system"]["message_history"].clear()
+        get_effects()["mouse_click"].stop()
+
     def update_seedos_signup(game_data):
         """
         Return the next scene to run after the seedOS signup.
@@ -72,7 +83,6 @@ def get_seedos_signup_scene():
             try:
                 result = next(signup_sequence)
             except StopIteration:
-                game_data["seed_system"]["message_history"].clear()
                 return "seedos_console"
             else:
                 if result:
@@ -83,7 +93,7 @@ def get_seedos_signup_scene():
         "name": "seedos_signup",
         "open": open_seedos_signup,
         "update": update_seedos_signup,
-        "exit": None}
+        "exit": exit_seedos_signup}
 
 
 def start_signup_sequence(game_data):
@@ -93,6 +103,7 @@ def start_signup_sequence(game_data):
     :param game_data: a dictionary representing the data needed to run the game
     :precondition game_data: must be a well-formed dictionary of game data
     :postcondition: get an iterator for running the signup sequence
+    :postcondition: yields a string representing the message to print or None to continue:w
     :return: an iterator representing the signup sequence
     """
     send_messages(game_data["seed_system"], (
