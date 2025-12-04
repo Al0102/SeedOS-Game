@@ -45,7 +45,7 @@ def run_command(seed_system, command_data, tokens):
         else:
             status, status_message = run_command(seed_system, next_command, tokens[1:])
     else:
-        status, status_message = command_data["run"](seed_system, tokens[1:])
+        status, status_message = command_data["run"](seed_system, tokens)
     return (status, command_data["name"] + " -> " + status_message)
 
 
