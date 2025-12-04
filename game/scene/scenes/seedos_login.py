@@ -41,8 +41,8 @@ def get_seedos_login_scene():
         save_files = load_saves_file_paths(game_data)
         options = list(set(map(lambda file: file.stem, save_files)) - corrupted_files_names)
         if len(options) <= 5:
-            options.insert(0, style("NEW", "bold"))
-        options.insert(0, style("Back to main menu", "bold"))
+            options.insert(0, style("NEW", "bold", "yellow"))
+        options.insert(0, style("Back to main menu", "bold", "red"))
         menu_column, menu_row = centered_menu_position(options)
         menu = create_menu(
             menu_column, menu_row,
@@ -71,9 +71,9 @@ def get_seedos_login_scene():
             selection = menu["update_menu"](inputted)
             if selection is None:
                 continue
-            if selection == style("Back to main menu", "bold"):
+            if selection == style("Back to main menu", "bold", "red"):
                 return "main_menu"
-            if selection == style("NEW", "bold"):
+            if selection == style("NEW", "bold", "yellow"):
                 return "seedos_signup"
             data = load_save_from_file(
                 list(filter(lambda file: file.stem == selection, save_files))[0])
