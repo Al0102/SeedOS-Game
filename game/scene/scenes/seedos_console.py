@@ -25,7 +25,7 @@ def get_seedos_console_scene():
     :postcondition: get data for the seedOS console scene
     :return: a dictionary representing the data for the seedOS console scene
     """
-    prompt_user = start_prompt_user()
+    prompt_user = None
 
     def open_seedos_console(_):
         """

@@ -6,8 +6,7 @@ from time import sleep
 from game.save import save_data_to_file
 from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press
-from game.terminal.screen import clear_screen
-from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt
+from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt, send_message
 
 
 def get_seedos_shutdown_scene():
@@ -25,18 +24,20 @@ def get_seedos_shutdown_scene():
     :postcondition: get data for the seedOS shutdown scene
     :return: a dictionary representing the data for the seedOS shutdown scene
     """
-    prompt_user = start_prompt_user()
+    prompt_user = None
 
-    def open_seedos_shutdown(_):
+    def open_seedos_shutdown(game_data):
         """
         Reset the menu.
 
-        :postcondition: open the seedOS shutdown
+        :param game_data: a dictionary representing the data needed to run the game
+        :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: open the seedOS shutdown scene
         """
         nonlocal prompt_user
-        clear_screen()
         draw_user_prompt()
         prompt_user = start_prompt_user()
+        send_message(game_data["seed_system"], "Save and shutdown SeedOS? (yes/no)")
         get_effects()["mouse_click"].play(loop=True)
         get_effects()["mouse_click"].pause()
 
@@ -80,6 +81,7 @@ def get_seedos_shutdown_scene():
                 return "main_menu"
             if inputted_prompt == "no":
                 return "seedos_console"
+            send_message(game_data["seed_system"], "Save and shutdown SeedOS? (yes/no)")
             prompt_user = start_prompt_user()
 
     return {
