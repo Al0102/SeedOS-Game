@@ -5,26 +5,28 @@ from game.seedOS.command import create_command
 from game.seedOS.commands.command_root import create_command_root
 
 
-def init_seed_system(aphid_name):
+def init_seed_system():
     """
     Return a seedOS data dictionary.
 
     The seedOS dictionary has the form:
     {
-        "aphid": <dictionary of aphid data>,
+        "aphid": <dictionary of aphid data or None>,
         "command_root": <dictionary of command data>,
-        "file_tree": <dictionary of file tree data>
+        "file_tree": <dictionary of file tree data>,
+        "message_history": <list of string outputs to seedOS console>,
+        "active_program": <string program (scene) name or None for seedos_console>
     }
 
-    :param aphid_name: a string representing the name of the system's APHID
-    :precondition: aphid_name must be a string
     :postcondition: get a new seedOS data dictionary
     :return: a dictionary representing new seedOS data
     """
     return {
-        "aphid": init_aphid(aphid_name),
+        "aphid": None,
         "command_root": create_command_root(),
-        "file_tree": {}}
+        "file_tree": {},
+        "message_history": [],
+        "active_program": None}
 
 
 def init_aphid(name):

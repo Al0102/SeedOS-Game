@@ -1,6 +1,9 @@
 [
   {
-    "name": "help", "options": ["[command]"],
+    "name": "help",
+    "options": [
+      "[command]"
+    ],
     "short_description": "List available commands or get the documentation for a command",
     "long_description": [
       "Syntax:",
@@ -8,6 +11,16 @@
       "  - list all available commands",
       "  help [command]",
       "  - get the help documentation for [command]"
+    ]
+  },
+  {
+    "name": "shutdown",
+    "options": [],
+    "short_description": "Save and shutdown seedOS (return to main menu)",
+    "long_description": [
+      "Syntax:",
+      "  shutdown",
+      "  - save and shutdown seedOS system"
     ]
   }
 ]
