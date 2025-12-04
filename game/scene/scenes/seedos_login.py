@@ -60,6 +60,7 @@ def get_seedos_login_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS login scene
         """
+        clear_screen()
         if game_data["seed_system"]:
             game_data["seed_system"]["message_history"].clear()
 
