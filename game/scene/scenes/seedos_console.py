@@ -7,7 +7,7 @@ from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 from game.seedOS.command import send_command
-from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt
+from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt, send_message
 
 
 def get_seedos_console_scene():
@@ -48,6 +48,8 @@ def get_seedos_console_scene():
 
         :param game_data: a dictionary representing the data needed to run the game
         :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: run the seedOS console scene
+        :postcondition: return the next scene to run, or None for game exit
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """
@@ -62,6 +64,11 @@ def get_seedos_console_scene():
             if inputted_prompt is None:
                 continue
             result = send_command(game_data["seed_system"], inputted_prompt)
+            if result["code"] == "success" and game_data["seed_system"]["active_program"]:
+                send_message(
+                    game_data["seed_system"],
+                    f"Running... {game_data["seed_system"]["active_program"]}")
+                return game_data["seed_system"]["active_program"]
             prompt_user = start_prompt_user()
 
     return {
