@@ -31,8 +31,8 @@ def get_startup_scene():
         :postcondition: start text_input for screen size confirmation
         """
         nonlocal update_confirm_prompt
-        update_confirm_prompt = start_text_input(3, 3)
         clear_screen()
+        update_confirm_prompt = start_text_input(3, 3)
 
     def update_startup(game_data):
         """
