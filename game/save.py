@@ -86,7 +86,7 @@ def save_data_to_file(game_data):
         with open(file_path, "wb") as save_file:
             pickle.dump(data, save_file)
     except FileNotFoundError:
-        status = f"local_data folder does not exist, cannot wrote"
+        status = f"local_data folder does not exist, cannot write"
     except PermissionError:
         status = f"not allowed to write to: {file_path}"
     finally:
