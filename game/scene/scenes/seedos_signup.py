@@ -5,10 +5,11 @@ from time import sleep
 
 from game.ansi_actions.style import style
 from game.menu import create_menu
+from game.save import save_data_to_file
 from game.seedOS import init_seed_system, init_aphid
 from game.seedOS.console import display_message_history, draw_user_prompt, send_message, start_prompt_user, \
     send_messages, get_console_dimensions
-from game.sound.effects import chance_sound, get_effects
+from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press, pull_input
 from game.terminal.screen import clear_screen
 
@@ -57,6 +58,8 @@ def get_seedos_signup_scene():
 
         :param game_data: a dictionary representing the data needed to run the game
         :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: run the seedOS signup scene
+        :postcondition: return the next scene to run, or None for game exit
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """
@@ -83,6 +86,14 @@ def get_seedos_signup_scene():
 
 
 def start_signup_sequence(game_data):
+    """
+    Return iterator for signup and creating new seed system.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :precondition game_data: must be a well-formed dictionary of game data
+    :postcondition: get an iterator for running the signup sequence
+    :return: an iterator representing the signup sequence
+    """
     send_messages(game_data["seed_system"], (
         "Installing seedOS...",
         "Hatching APHID...",
@@ -117,7 +128,9 @@ def start_signup_sequence(game_data):
             yield
             continue
         if result == "Yes":
-            yield save_data_to_file(game_data)
+            send_messages(game_data["seed_system"], (
+                save_data_to_file(game_data),
+                "Starting SeedOS..."))
         break
     send_messages(game_data["seed_system"], (
         "Initializing seedOS ecosystem, this may take a while...",

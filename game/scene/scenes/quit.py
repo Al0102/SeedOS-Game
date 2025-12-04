@@ -29,6 +29,8 @@ def qet_quit_scene():
 
         None is returned to signify program exit.
 
+        :postcondition: run the quit scene
+        :postcondition: return the next scene to run, or None for game exit
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """

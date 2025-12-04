@@ -47,6 +47,8 @@ def get_main_menu_scene():
 
         :param game_data: a dictionary representing the data needed to run the game
         :precondition game_data: must be a well-formed dictionary of game data
+        :postcondition: run the game main menu scene
+        :postcondition: return the next scene to run, or None for game exit
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """
