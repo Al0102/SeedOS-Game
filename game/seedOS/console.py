@@ -1,6 +1,8 @@
 """
 Main user interaction with the system via a console.
 """
+from time import sleep
+
 from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
 from game.terminal.input import start_text_input, init_key_input, pull_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
@@ -24,10 +26,52 @@ def get_console_dimensions():
     :return: a dictionary of SeedOS simulation console part names as strings and their sizes as tuples
     """
     return {
-        "output": (max(10, min(60, get_screen_size()[0] - 20)), max(1, get_screen_size()[1] - 4)),
+        "output": (max(10, min(4 * get_screen_size()[0] // 4, get_screen_size()[0] - 20)),
+                   max(1, get_screen_size()[1] - 4)),
         "input": (max(10, min(80, get_screen_size()[0] - 2)), 3),
         "clippy": (max(14, min(20, get_screen_size()[0] // 4)), max(20, get_screen_size()[1] - 4))
     }
+
+
+def send_message(seed_system, message):
+    """
+    Write message(s) to the message history of <seed_system>.
+
+    Split <message> into multiple lines if larger than console output width.
+
+    :param seed_system: a dictionary representing the currently active seedOS system
+    :param message: a string representing the message to write to the message history
+    :precondition: seed_system must be a dictionary with the key-value pair, "message_history": <list of strings>
+    :precondition: message must be a string
+    :postcondition: append <message> to the message history of <seed_system>
+    :postcondition: the message may be split up if longer than the console output width
+    """
+    width = get_console_dimensions()["output"][0]
+    if len(message) > width:
+        seed_system["message_history"].append(message[:width])
+        send_message(seed_system, message[width:])
+    else:
+        seed_system["message_history"].append(message)
+
+
+def send_messages(seed_system, messages, delay=0.5):
+    """
+    Send multiple messages to the console, <delay> seconds apart.
+
+    :param seed_system: a dictionary representing the currently active seedOS system
+    :param messages: an iterable of strings representing the messages to write to the console
+    :param delay: (default 0.5) a float greater than or equal to 0,
+                  representing the seconds to wait between each message write
+    :precondition: seed_system must be a dictionary with the key-value pair, "message_history": <list of strings>
+    :precondition: message must be a string
+    :precondition: delay must be a float greater than or equal to 0
+    :postcondition: send and display each string in <messages>, <delay> seconds apart
+    :postcondition: append the contents of each string in <messages> to the message history of <seed_system>
+    """
+    for message in messages:
+        send_message(seed_system, message)
+        display_message_history(seed_system)
+        sleep(delay)
 
 
 def display_message_history(seed_system, offset=0):
@@ -52,7 +96,6 @@ def display_message_history(seed_system, offset=0):
     # Get messages going back from offset to message_count inclusive
     messages = seed_system["message_history"][-offset - 1:- offset - message_count - 1:-1]
     messages.reverse()
-    # TODO move justify to draw.py
     messages = ["" for _ in range(size[1] - message_count)] + messages
     text_area = create_text_area(
         column=4, row=2, width=size[0], height=size[1],
@@ -72,7 +115,8 @@ def start_prompt_user():
     """
     Return a function for prompting the user for a command in the SeedOS console.
 
-    :return:
+    :postcondition: start a new user prompt in the console
+    :return: a function representing the update call for the prompt
     """
     text_input = start_text_input(
         column=3, row=get_screen_size()[1] - 1, max_width=get_console_dimensions()["input"][0] - 3)
