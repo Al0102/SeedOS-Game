@@ -77,7 +77,7 @@ def get_seedos_shutdown_scene():
             inputted_prompt = inputted_prompt.strip().lower()
             if inputted_prompt == "yes":
                 save_data_to_file(game_data)
-                return "startup"
+                return "main_menu"
             if inputted_prompt == "no":
                 return "seedos_console"
             prompt_user = start_prompt_user()

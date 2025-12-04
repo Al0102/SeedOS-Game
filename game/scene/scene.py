@@ -1,7 +1,29 @@
 """
 Main scene manager.
 """
-from game.scene import init_scenes
+from game.scene.scenes import (
+    startup, main_menu, quit,
+    seedos_signup, seedos_login, seedos_console, seedos_shutdown
+)
+
+
+def init_scenes():
+    """
+    Return a dictionary of scene data dictionaries for the game.
+
+    :postcondition: get a dictionary of well-formed scene data dictionaries
+    :return: a dictionary of scene data dictionaries representing the game's scenes
+    """
+    return {
+        "startup": startup.get_startup_scene(),
+        "main_menu": main_menu.get_main_menu_scene(),
+        "quit": quit.qet_quit_scene(),
+        "seedos_login": seedos_login.get_seedos_login_scene(),
+        "seedos_signup": seedos_signup.get_seedos_signup_scene(),
+        "seedos_console": seedos_console.get_seedos_console_scene(),
+        "seedos_shutdown": seedos_shutdown.get_seedos_shutdown_scene()
+    }
+
 
 
 def get_scenes(scenes={}):
