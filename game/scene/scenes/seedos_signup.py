@@ -7,8 +7,9 @@ from game.ansi_actions.style import style
 from game.menu import create_menu
 from game.save import save_data_to_file
 from game.seedOS import init_seed_system, init_aphid
-from game.seedOS.console import display_message_history, draw_user_prompt, send_message, start_prompt_user, \
-    send_messages, get_console_dimensions
+from game.seedOS.console import (
+    display_message_history, draw_user_prompt, send_message, start_prompt_user,
+    send_messages, get_console_dimensions)
 from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press, pull_input
 from game.terminal.screen import clear_screen
