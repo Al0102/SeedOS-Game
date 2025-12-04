@@ -6,10 +6,16 @@ import json
 from game import relative_path
 from game.ansi_actions.style import style
 from game.seedOS.command import create_command
-from game.seedOS.console import display_message_history
+from game.seedOS.console import display_message_history, send_messages, send_message
 
 
 def get_help_command():
+    """
+    Get the dictionary data for the help command.
+
+    :postcondition: get the data for the help command
+    :return: a dictionary representing the data for the help command
+    """
     return create_command(
         name="help",
         run=run_help,
@@ -17,6 +23,16 @@ def get_help_command():
 
 
 def run_help(seed_system, tokens):
+    """
+    Run the help command.
+
+    :param seed_system: a dictionary representing the currently active seedOS system
+    :param tokens: a list of strings representing the arguments passed in to the command
+    :precondition: seed_system must be a well-formed seed_system dictionary
+    :precondition: tokens must be a list of strings
+    :postcondition: display help documentation
+    :return: a tuple of 2 strings representing the success status and a status message
+    """
     status = "success"
     try:
         with open(relative_path("seedOS/commands/help.json"), "r") as help_docs_file:
@@ -29,8 +45,8 @@ def run_help(seed_system, tokens):
     command_documents = {
         data["name"]: data for data in help_json if data["name"] in seed_system["command_root"]["subcommands"].keys()}
     if len(tokens) > 1:
-        status = "syntax_error"
-        status_message = "|'help' expects at most, 1 argument|\n" + f"{len(tokens)} > 1"
+        status = "argument_error"
+        status_message = f"|'help' expects at most, 1 argument|\n{len(tokens)} > 1"
     elif len(tokens) == 1:
         try:
             command_help = command_documents[tokens[0]]
@@ -38,11 +54,11 @@ def run_help(seed_system, tokens):
             status = "syntax_error"
             status_message = "|Could not find help document|\n" + tokens[0]
         else:
-            seed_system["message_history"] += format_long_description(command_help).split("\n")
+            send_messages(seed_system, format_long_description(command_help).split("\n"))
             status_message = f"Showed help documentation for {tokens[0]}"
     else:
-        for command_help in command_documents:
-            seed_system["message_history"].append(format_short_description(command_help))
+        for command_help in command_documents.values():
+            send_message(seed_system, format_short_description(command_help))
         status_message = "|Listed available commands|"
     display_message_history(seed_system)
     return (status, status_message)
