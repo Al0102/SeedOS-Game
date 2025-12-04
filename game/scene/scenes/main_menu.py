@@ -53,9 +53,10 @@ def get_main_menu_scene():
                  or None to signify game exit
         """
         while True:
-            poll_key_press(game_data["key_input"])
-            inputted = pull_input(game_data["key_input"], flush=True)[0]
+            inputted = poll_key_press(game_data["key_input"])
             selection = menu["update_menu"](inputted)
+            if selection is None:
+                continue
             if selection == "Start":
                 return "seedos_login"
             if selection == "Quit":
