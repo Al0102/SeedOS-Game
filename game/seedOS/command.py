@@ -2,6 +2,7 @@
 User interaction with SeedOS.
 """
 from game.ansi_actions import style
+from game.seedOS.console import send_messages, send_message
 
 
 def get_status_styles():
@@ -23,8 +24,8 @@ def get_status_styles():
         "success": ("green", "dim"),
         "system_error": ("background_red", "black", "rapid_blink"),
         "syntax_error": ("red", "bold"),
-        "privilege_error": ("yellow", "bold")
-    }
+        "argument_error": ("red", "bold"),
+        "privilege_error": ("yellow", "bold")}
 
 
 def run_command(seed_system, command_data, tokens):
@@ -39,7 +40,7 @@ def run_command(seed_system, command_data, tokens):
             status = "argument_error"
             status_message = "|Expected a command|\nReceived nothing"
         except KeyError:
-            status = "invalid_error"
+            status = "syntax_error"
             status_message = "|Could not find command|\n" + tokens[0]
         else:
             status, status_message = run_command(seed_system, next_command, tokens[1:])
@@ -49,13 +50,12 @@ def run_command(seed_system, command_data, tokens):
 
 
 def send_command(seed_system, command_string):
-    seed_system["message_history"].append(command_string)
+    send_message(seed_system, command_string)
     tokens = command_string.strip().split()
     status = status_report(
         *run_command(seed_system, seed_system["command_root"], tokens))
-    seed_system["message_history"] += status["message"].split("\n")
+    send_messages(seed_system, status["message"].split("\n"))
     return status
-
 
 def create_command(name, run, privilege_required, subcommands=None):
     """
