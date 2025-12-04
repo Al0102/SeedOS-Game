@@ -53,7 +53,6 @@ def get_main_menu_scene():
         while True:
             poll_key_press(game_data["key_input"])
             inputted = pull_input(game_data["key_input"], flush=True)[0]
-            chance_sound("mouse_click", 0.5)
             selection = menu["update_menu"](inputted)
             if selection == "Start":
                 return "seedos_login"
