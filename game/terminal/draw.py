@@ -3,6 +3,7 @@ Drawing and animating to the terminal.
 """
 from game.ansi_actions import cursor
 from game.terminal.screen import clear_screen
+from game.utilities import remove_escape_codes, get_escape_codes_indices
 
 
 def create_text_area(column, row, width, height, text=""):
@@ -86,7 +87,8 @@ def draw_text_box(
     if not text_area:
         text_area = create_text_area(column, row, width, height, text)
     text_rows = text_area["text"].split("\n")
-    clip_row_text = lambda row_text: row_text[:min(len(row_text), text_area["width"])]
+    clip_row_text = lambda row_text: remove_escape_codes(row_text)[:min(len(row_text), text_area["width"])]
+    text_ansi = tuple(map(get_escape_codes_indices, text_rows))
     text_rows = tuple(map(clip_row_text, text_rows))
     for row_index in range(text_area["height"]):
         if row_index == len(text_rows) and not overwrite:
@@ -94,7 +96,12 @@ def draw_text_box(
         to_draw = ""
         cursor.cursor_set(text_area["column"], text_area["row"] + row_index)
         if row_index < len(text_rows):
-            to_draw += text_rows[row_index]
+            ansi_insert = text_rows[row_index]
+            # print(text_ansi, end="")
+            for ansi_code in reversed(text_ansi[row_index]):
+                if ansi_code[0] <= len(text_rows[row_index]):
+                    ansi_insert = ansi_insert[:ansi_code[0]] + ansi_code[1] + ansi_insert[ansi_code[0]:]
+            to_draw = ansi_insert
         if overwrite:
             to_draw = to_draw.ljust(text_area["width"])
         print(to_draw, end="")
@@ -140,6 +147,10 @@ def draw_rectangle(
             ("|".ljust(justify_width, " ") + "|\n") * middle_height +
             "`".ljust(justify_width, "-") + "´")
     draw_text_box(text_area=text_area, flush_output=flush_output)
+
+
+def play_animation(frames, frames_per_second, loop=False):
+    pass
 
 
 def main():
