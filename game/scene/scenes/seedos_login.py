@@ -2,9 +2,9 @@
 Load save data from file based on username.
 """
 from game.ansi_actions.cursor import cursor_set
-from game.game import load_saves_file_paths, load_save_from_file
+from game.ansi_actions.style import style
+from game.save import load_saves_file_paths, load_save_from_file
 from game.menu import create_menu, centered_menu_position
-from game.sound.effects import chance_sound
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 
@@ -39,7 +39,10 @@ def get_seedos_login_scene():
         """
         nonlocal save_files, menu, menu_column, menu_row
         save_files = load_saves_file_paths(game_data)
-        options = set(map(lambda file: file.stem, save_files)) - corrupted_files_names
+        options = list(set(map(lambda file: file.stem, save_files)) - corrupted_files_names)
+        if len(options) <= 5:
+            options.insert(0, style("NEW", "bold"))
+        options.insert(0, style("Back to main menu", "bold"))
         menu_column, menu_row = centered_menu_position(options)
         menu = create_menu(
             menu_column, menu_row,
@@ -63,14 +66,13 @@ def get_seedos_login_scene():
         nonlocal corrupted_files_names
         while True:
             inputted = poll_key_press(game_data["key_input"])
-            chance_sound("mouse_click", 0.5)
             selection = menu["update_menu"](inputted)
             if selection is None:
                 continue
-            if selection == "Back to main menu...":
+            if selection == style("Back to main menu", "bold"):
                 return "main_menu"
-            if selection == "\033NEW":
-                return "seedos_creation"
+            if selection == style("NEW", "bold"):
+                return "seedos_signup"
             data = load_save_from_file(
                 list(filter(lambda file: file.stem == selection, save_files))[0])
             if data:

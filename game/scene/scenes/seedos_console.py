@@ -1,11 +1,13 @@
 """
 Primary game loop for file navigation.
 """
-from game.sound.effects import get_effects, chance_sound
-from game.terminal.input import pull_input, start_text_input, poll_key_press
+from time import sleep
+
+from game.sound.effects import get_effects
+from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
-from game.seedOS.command import send_command, run_command
-from game.seedOS.console import get_console_dimensions, display_message_history, start_prompt_user, draw_user_prompt
+from game.seedOS.command import send_command
+from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt
 
 
 def get_seedos_console_scene():
@@ -35,6 +37,8 @@ def get_seedos_console_scene():
         clear_screen()
         draw_user_prompt()
         prompt_user = start_prompt_user()
+        get_effects()["mouse_click"].play(loop=True)
+        get_effects()["mouse_click"].pause()
 
     def update_seedos_console(game_data):
         """
@@ -49,14 +53,15 @@ def get_seedos_console_scene():
         """
         nonlocal prompt_user
         while True:
+            display_message_history(game_data["seed_system"])
+            get_effects()["mouse_click"].pause()
             inputted = poll_key_press(game_data["key_input"])
+            get_effects()["mouse_click"].resume()
+            sleep(0.01)
             inputted_prompt = prompt_user(inputted)
-            chance_sound("mouse_click", 0.5)
             if inputted_prompt is None:
                 continue
-            result = send_command(game_data["seed"], inputted_prompt)
-            if result[0] == "success":
-                return
+            result = send_command(game_data["seed_system"], inputted_prompt)
             prompt_user = start_prompt_user()
 
     return {
