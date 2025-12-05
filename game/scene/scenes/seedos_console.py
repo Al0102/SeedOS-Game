@@ -3,11 +3,13 @@ Primary game loop for file navigation.
 """
 from time import sleep
 
+from game.ansi_actions.style import style
 from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 from game.seedOS.command import send_command
-from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt, send_message
+from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt, send_message, \
+    send_messages
 
 
 def get_seedos_console_scene():
@@ -27,16 +29,20 @@ def get_seedos_console_scene():
     """
     prompt_user = None
 
-    def open_seedos_console(_):
+    def open_seedos_console(game_data):
         """
         Reset the menu.
 
+        :param game_data: a dictionary representing the data needed to run the game
+        :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: open the seedOS console
         """
         nonlocal prompt_user
         clear_screen()
         draw_user_prompt()
         prompt_user = start_prompt_user()
+        handle_progress(game_data)
+        game_data["seed_system"]["active_program"] = None
         get_effects()["mouse_click"].play(loop=True)
         get_effects()["mouse_click"].pause()
 
@@ -65,6 +71,7 @@ def get_seedos_console_scene():
         while True:
             display_message_history(game_data["seed_system"])
             get_effects()["mouse_click"].pause()
+            prompt_user("")
             inputted = poll_key_press(game_data["key_input"])
             get_effects()["mouse_click"].resume()
             sleep(0.05)
@@ -85,3 +92,21 @@ def get_seedos_console_scene():
         "update": update_seedos_console,
         "exit": exit_seedos_console}
 
+
+def handle_progress(game_data):
+    progress = game_data["progress"]
+    if progress["just_loaded"]:
+        progress["just_loaded"] = False
+        game_data["seed_system"]["message_history"].clear()
+        send_message(
+            game_data["seed_system"],
+            f"Welcome, {style(game_data['seed_system']['aphid']['name'], 'green')}")
+    if progress["new_user"]:
+        progress["new_user"] = False
+        send_messages(game_data["seed_system"], (
+            f"Hello {style('beta tester!', 'bold', 'yellow')}",
+            "Welcome to SeedOS.",
+            "To get setup with your new operating system,",
+            f"enter '{style('help', 'bold', 'magenta')}' for information about commands.",
+            f"When you're ready, take a '{style('look', 'bold', 'yellow')}' inside README.txt",
+            "for important information."))

@@ -16,8 +16,9 @@ def setup_game():
         "key_input": <terminal input data dictionary>,
         "saves_path": <local save data folder path>,
         "previous_scene": None or <scene data dictionary>,
-        "active_scene": <scene data dictionary>
-        "seed_system": None or <seedOS dictionary>
+        "active_scene": <scene data dictionary>,
+        "seed_system": None or <seedOS dictionary>,
+        "progress": <dictionary of progress statuses>
     }
 
     :postcondition: get the data needed for the game to run
@@ -29,7 +30,8 @@ def setup_game():
         "saves_path": get_user_data_folder(),
         "previous_scene": None,
         "active_scene": get_scenes()["startup"],
-        "seed_system": None}
+        "seed_system": None,
+        "progress": {}}
     return game_data
 
 

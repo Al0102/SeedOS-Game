@@ -5,6 +5,7 @@ from game.ansi_actions.cursor import cursor_set
 from game.ansi_actions.style import style
 from game.save import load_saves_file_paths, load_save_from_file
 from game.menu import create_menu, centered_menu_position
+from game.seedOS.console import send_message
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 
@@ -62,7 +63,7 @@ def get_seedos_login_scene():
         """
         clear_screen()
         if game_data["seed_system"]:
-            game_data["seed_system"]["message_history"].clear()
+            game_data["progress"]["just_loaded"] = True
 
     def update_seedos_login(game_data):
         """
