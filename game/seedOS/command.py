@@ -55,7 +55,7 @@ def send_command(seed_system, command_string):
     status = status_report(
         *run_command(seed_system, seed_system["command_root"], tokens))
     send_messages(seed_system, status["message"].split("\n"))
-    send_message(seed_system, "")
+    send_messages(seed_system, ("-----", ""), 0)
     return status
 
 def create_command(name, run, privilege_required, subcommands=None):

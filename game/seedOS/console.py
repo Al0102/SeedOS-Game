@@ -4,7 +4,7 @@ Main user interaction with the system via a console.
 from time import sleep
 
 from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
-from game.terminal.input import start_text_input, init_key_input, pull_input, poll_key_press
+from game.terminal.input import start_text_input, init_key_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
 
 
@@ -119,7 +119,7 @@ def start_prompt_user():
     :return: a function representing the update call for the prompt
     """
     text_input = start_text_input(
-        column=3, row=get_screen_size()[1] - 1, max_width=get_console_dimensions()["input"][0] - 3)
+        column=3, row=get_screen_size()[1] - 1, max_width=get_console_dimensions()["input"][0] - 4)
     draw_user_prompt()
 
     def update_prompt(key_press):

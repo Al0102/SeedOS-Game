@@ -39,12 +39,13 @@ def get_seedos_console_scene():
         """
         nonlocal prompt_user
         clear_screen()
-        draw_user_prompt()
         prompt_user = start_prompt_user()
+        prompt_user("escape")
         handle_progress(game_data)
         game_data["seed_system"]["active_program"] = None
         get_effects()["mouse_click"].play(loop=True)
         get_effects()["mouse_click"].pause()
+        display_message_history(game_data["seed_system"])
 
     def exit_seedos_console(_):
         """
@@ -69,13 +70,12 @@ def get_seedos_console_scene():
         """
         nonlocal prompt_user
         while True:
-            display_message_history(game_data["seed_system"])
             get_effects()["mouse_click"].pause()
-            prompt_user("")
             inputted = poll_key_press(game_data["key_input"])
             get_effects()["mouse_click"].resume()
             sleep(0.05)
             inputted_prompt = prompt_user(inputted)
+            display_message_history(game_data["seed_system"])
             if inputted_prompt is None:
                 continue
             result = send_command(game_data["seed_system"], inputted_prompt)

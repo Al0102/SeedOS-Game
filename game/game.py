@@ -1,6 +1,7 @@
 """
 The entry point for the game.
 """
+from game.ansi_actions.cursor import set_cursor_visibility
 from game.ansi_actions.style import style
 from game.save import get_user_data_folder
 from game.scene.scene import get_scenes
@@ -64,7 +65,12 @@ def main():
     Drive the program.
     """
     game_data = setup_game()
-    game_loop(game_data)
+    set_cursor_visibility(show=False)
+    try:
+        game_loop(game_data)
+    finally:
+        print(style("Finished!", "reset"))
+        set_cursor_visibility(show=True)
 
 
 if __name__ == "__main__":

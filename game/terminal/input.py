@@ -4,6 +4,7 @@ OS dependent inputs with getch and msvcrt.
 import os
 from string import printable
 from game.ansi_actions import cursor
+from game.ansi_actions.style import style
 from game.sound import effects
 from game.terminal.screen import get_screen_size, clear_screen
 from game.terminal.draw import draw_text_box, create_text_area
@@ -210,7 +211,9 @@ def start_text_input(column, row, max_width=None, hide=False):
         max_width = get_screen_size()[0] - column - 1
     text_area = create_text_area(column=column, row=row, width=max_width, height=1)
     string_input = []
+    # The index being inserted at
     cursor_at = 0
+    # The number of characters beyond max-width
     draw_index = 0
 
     def update_text_input(key_press):
@@ -244,6 +247,11 @@ def start_text_input(column, row, max_width=None, hide=False):
             text_area["text"] = "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)])
             draw_text_box(text_area=text_area, overwrite=True)
             cursor.cursor_set(min(max_width + column, max(column, column + cursor_at - draw_index)), row)
+            try:
+                print(style(string_input[cursor_at], "underline"), end="")
+            except IndexError:
+                print(style(" ", "underline"), end="")
+
         return None
 
     return update_text_input

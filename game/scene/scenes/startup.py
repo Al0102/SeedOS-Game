@@ -33,6 +33,7 @@ def get_startup_scene():
         nonlocal update_confirm_prompt
         clear_screen()
         update_confirm_prompt = start_text_input(3, 3)
+        update_confirm_prompt("escape")
 
     def update_startup(game_data):
         """
