@@ -58,6 +58,7 @@ def send_command(seed_system, command_string):
     send_messages(seed_system, ("-----", ""), 0)
     return status
 
+
 def create_command(name, run, privilege_required, subcommands=None):
     """
     Return the data for a new command.

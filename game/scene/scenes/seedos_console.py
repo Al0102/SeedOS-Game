@@ -8,8 +8,7 @@ from game.sound.effects import get_effects
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 from game.seedOS.command import send_command
-from game.seedOS.console import display_message_history, start_prompt_user, draw_user_prompt, send_message, \
-    send_messages
+from game.seedOS.console import display_message_history, start_prompt_user, send_message, send_messages
 
 
 def get_seedos_console_scene():
