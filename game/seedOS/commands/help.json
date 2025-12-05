@@ -4,7 +4,7 @@
     "options": [
       "[command]"
     ],
-    "short_description": "List available commands or get the documentation for a command",
+    "short_description": "List available commands or get the documentation for a command.",
     "long_description": [
       "Syntax:",
       "  help",
@@ -16,11 +16,100 @@
   {
     "name": "shutdown",
     "options": [],
-    "short_description": "Save and shutdown seedOS (return to main menu)",
+    "short_description": "Save and shutdown seedOS (return to main menu).",
     "long_description": [
       "Syntax:",
       "  shutdown",
       "  - save and shutdown seedOS system"
+    ]
+  },
+  {
+    "name": "clear",
+    "options": [],
+    "short_description": "Clear the console and terminal screen.",
+    "long_description": [
+      "Pesticide for letters. Useful for stuff that just won't go away",
+      "Syntax:",
+      "  clear",
+      "  - clear the console and terminal screen"
+    ]
+  },
+  {
+    "name": "ls",
+    "options": [],
+    "short_description": "Shows the contents of the current working directory.",
+    "long_description": [
+      "Syntax:",
+      "  ls",
+      "  - show the contents of the current working directory"
+    ]
+  },
+  {
+    "name": "cd",
+    "options": [
+      "[path]"
+    ],
+    "short_description": "Changes the current working directory.",
+    "long_description": [
+      "'.' is the current directory",
+      "'..' is the parent directory",
+      "Syntax:",
+      "  cd",
+      "  - jump to root directory (usually 'seed/')",
+      "  cd [path]",
+      "  - change to the specified relative path')"
+    ]
+  },
+  {
+    "name": "look",
+    "options": [
+      "<path>"
+    ],
+    "short_description": "Shows the contents of a text file.",
+    "long_description": [
+      "'.' is the current directory",
+      "'..' is the parent directory",
+      "Syntax:",
+      "  look <path>",
+      "  - look at the contents of the specified text file"
+    ]
+  },
+  {
+    "name": "do",
+    "options": [
+      "<path>"
+    ],
+    "short_description": "Run a sprout file.",
+    "long_description": [
+      "'.' is the current directory",
+      "'..' is the parent directory",
+      "Syntax:",
+      "  do <path>",
+      "  - run the specified program"
+    ]
+  },
+  {
+    "name": "rain",
+    "options": [
+      "<options> [options]"
+    ],
+    "short_description": "Manages installed/external packages.",
+    "long_description": [
+      "Syntax:",
+      "  rain list",
+      "  - show installed packages",
+      "  rain catch <package>",
+      "  - install an external package",
+      "    - <package>",
+      "      - the name of the package to install",
+      "  rain leak <package>",
+      "  - remove an installed package",
+      "    - <package>",
+      "      - the name of the package to remove",
+      "  rain aphid <package>",
+      "  - upgrades your APHID with a compatible, installed package",
+      "    - <package>",
+      "      - the name of the package to attach to your APHID"
     ]
   }
 ]
