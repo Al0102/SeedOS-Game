@@ -52,7 +52,6 @@ def get_seedos_shutdown_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS shutdown scene
         """
-        game_data["seed_system"]["active_program"] = None
         get_effects()["mouse_click"].stop()
 
     def update_seedos_shutdown(game_data):

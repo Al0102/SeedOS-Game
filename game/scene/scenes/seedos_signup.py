@@ -42,7 +42,7 @@ def get_seedos_signup_scene():
         """
         nonlocal signup_sequence
         game_data["seed_system"] = init_seed_system()
-        game_data["progress"] = []
+        game_data["progress"] = {"new_user": True}
         signup_sequence = start_signup_sequence(game_data)
         clear_screen()
         draw_user_prompt()
@@ -59,8 +59,8 @@ def get_seedos_signup_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS signup scene
         """
-        game_data["seed_system"]["message_history"].clear()
         get_effects()["mouse_click"].stop()
+        game_data["progress"]["just_loaded"] = True
 
     def update_seedos_signup(game_data):
         """
