@@ -164,8 +164,10 @@ def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
     :return: a string representing the result of the prompt
     """
     prompt_user = start_prompt_user()
+    prompt_user("escape")
     while True:
         output = prompt_user(poll_key_press(game_data["key_input"]))
+        display_message_history(game_data["seed_system"])
         if output is None:
             continue
         if is_valid(output):
