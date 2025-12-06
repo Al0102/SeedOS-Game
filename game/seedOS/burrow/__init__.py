@@ -1,0 +1,3 @@
+"""
+Burrow editor (battles).
+"""
