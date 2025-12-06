@@ -72,7 +72,7 @@ def get_seedos_console_scene():
             get_effects()["mouse_click"].pause()
             inputted = poll_key_press(game_data["key_input"])
             get_effects()["mouse_click"].resume()
-            sleep(0.05)
+            sleep(0.033)
             inputted_prompt = prompt_user(inputted)
             display_message_history(game_data["seed_system"])
             if inputted_prompt is None:
