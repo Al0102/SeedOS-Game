@@ -75,7 +75,7 @@ def get_seedos_signup_scene():
         # Ask user if they want to save their new game to a file
         send_messages(game_data["seed_system"], (
             style(f"Successfully registered APHID: {name}", "green"),
-            "Save game data to file?"))
+            "Save game data to file (this will overwrite existing files of the same name)?"))
         confirm_result = do_menu_prompt(
             game_data,
             "Yes", "No need, I'm beating this in one go")

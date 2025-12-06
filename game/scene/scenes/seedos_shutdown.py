@@ -98,7 +98,7 @@ def start_shutdown_sequence(game_data):
     """
     send_messages(game_data["seed_system"], (
         "Getting ready to shutdown system...",
-        style("Save game to file? (yes/no)", "red")))
+        style("Save game to file (this will overwrite the existing save data)? (yes/no)", "red")))
     prompt_user = start_prompt_user()
     while True:
         confirm_save = prompt_user(pull_input(game_data["key_input"], flush=True)[0])
