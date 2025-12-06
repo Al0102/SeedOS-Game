@@ -1,6 +1,7 @@
 """
 Burrow board functions.
 """
+import itertools
 from io import StringIO
 from sys import stderr
 from typing import TextIO
@@ -28,7 +29,7 @@ def get_entity_types():
     :return: a dictionary representing the defined entities
     """
     entities = (
-        create_entity("floor", style("▯", "dim")),
+        create_entity("floor", style("▯", "dim"), on_occupy=None),
         create_entity("void", ""),
         create_entity("wall", "#", health=5),
         create_entity("small_bug", style("*", "red"), health=1, base_damage=1),
@@ -88,6 +89,20 @@ def spawn_entity(board: dict, position: tuple, name=None, entity=None) -> dict |
     :return: a dictionary representing the created enemy if <name> is passed,
              a dictionary representing the passed entity if <entity> is passed,
              or None if the <name> is not a defined entity and <entity> is not passed
+
+    >>> counter = itertools.count()
+    >>> new_board = {"entity_id": counter}
+    >>> spawn_entity(new_board, (1, 1), name="wall") == {
+    ...     'name': 'wall', 'icon': '#', 'health': 5, 'position': (1, 1), 'id': 0}
+    True
+    >>> spawn_entity(new_board, (1, 1), entity={'name': 'player', 'position': (1, 1)}) == {
+    ...     'name': 'player', 'position': (1, 1), 'id': 1}
+    True
+    >>> new_board == {
+    ...     "entity_id": counter,
+    ...     (1, 1): [{'name': 'wall', 'icon': '#', 'health': 5, 'position': (1, 1), 'id': 0},
+    ...              {'name': 'player', 'position': (1, 1), 'id': 1}]}
+    True
     """
     if not name is None:
         try:
@@ -96,11 +111,26 @@ def spawn_entity(board: dict, position: tuple, name=None, entity=None) -> dict |
             print(f"Entity {name} not defined", file=stderr)
     try:
         entity["position"] = position
-    except KeyError:
+    except TypeError:
         print(f"Expected <name> or <entity> to be passed, but neither were found", file=stderr)
     else:
-        board[position] = entity
+        entity["id"] = next(board["entity_id"])
+        if not position in board:
+            board[position] = []
+        board[position].append(entity)
     return entity
+
+
+def create_board():
+    """
+    Create an empty board.
+
+    :postcondition: get a dictionary with one key-value pair: "entity_id": itertools.count()
+    :postcondition: entity_id will be used to assign each added entity a unique id
+    :return: a dictionary with key-value pair: "entity_id": itertools.count(),
+             representing the new board
+    """
+    return {"entity_id": itertools.count()}
 
 
 def load_board_from_file(board_file: TextIO):
@@ -117,20 +147,22 @@ def load_board_from_file(board_file: TextIO):
     :return: a dictionary representing the board with entities loaded from <board_file>
 
     >>> tilemap = StringIO("    ")
-    >>> load_board_from_file(tilemap) == {}
+    >>> load_board_from_file(tilemap) == {"entity_id": itertools.count()}
     True
     >>> tilemap = StringIO("#")
     >>> load_board_from_file(tilemap) == {
-    ...     (1, 1): {'name': 'wall', 'icon': '#', 'health': 5, 'position': (1, 1)}}
+    ...     "entity_id": itertools.count(),
+    ...     (1, 1): [{'name': 'wall', 'icon': '#', 'health': 5, 'position': (1, 1)}]}
     True
     >>> tilemap = StringIO(" * \\n   #")
     >>> load_board_from_file(tilemap) == {
-    ...     (2, 1): {'name': 'small_bug', 'icon': '\x1b[31m*\x1b[0m',
-    ...              'health': 1, 'base_damage': 1, 'position': (2, 1)},
-    ...     (4, 2): {'name': 'wall', 'icon': '#', 'health': 5, 'position': (4, 2)}}
+    ...     "entity_id": itertools.count(),
+    ...     (2, 1): [{'name': 'small_bug', 'icon': '\x1b[31m*\x1b[0m',
+    ...              'health': 1, 'base_damage': 1, 'position': (2, 1)}],
+    ...     (4, 2): [{'name': 'wall', 'icon': '#', 'health': 5, 'position': (4, 2)}]}
     True
     """
-    board = {}
+    board = create_board()
     entity_icons = dict(map(
         lambda entity: (remove_escape_codes(entity["icon"]), entity["name"]),
         get_entity_types().values()))
@@ -159,17 +191,51 @@ def draw_board(board: dict, position_offset=(0, 0), flush=True):
            representing the position to offset drawing <board> by
     :param flush: (default True) a boolean representing whether to flush the output to stdout
     :precondition: board must be a dictionary of dictionaries with key-value pair: "icon": <string>
-    :precondition: position_offset must be a tuple of 2 integers larger than or equal to 0,
-           representing the position to offset drawing <board> by
+    :precondition: position_offset must be a tuple of 2 integers larger than or equal to 0
     :precondition: flush_output must be a boolean
     :postcondition: draw <board> to the screen, offset by <position_offset>
+    :postcondition: the entity most recently added to the tile is drawn
     """
-    for entity_position, entity in board.items():
-        terminal_position = sum_vectors(entity_position, position_offset)
+    for entities_position, entities in board.items():
+        if entities_position == "entity_id":
+            continue
+        terminal_position = sum_vectors(entities_position, position_offset)
         if all(point_within_screen(terminal_position)):
             cursor_set(*terminal_position)
-            print(entity["icon"], end="")
+            print(entities[-1]["icon"], end="")
     print(end="", flush=flush)
+
+
+def get_entities_at_position(board, position):
+    """
+    Get the entity data dictionaries at <position> in board.
+
+    Spawn a "void" entity if board has no key: <position>
+
+    :param board: a dictionary of entity dictionaries representing the board to search
+    :param position: a tuple of 2 positive integers larger than 0 representing the position to search
+    :precondition: board must be a dictionary of dictionaries with key-value pair: "icon": <string>
+    :precondition: position must be a tuple of 2 positive integers larger than 0
+    :postcondition: get the entities at <position> in <board>,
+    :postcondition: spawn a new "void" entity if <position> does not exist yet
+    :return: a list of dictionaries representing the data of the entities at <position> in <board>,
+
+    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}]}
+    >>> get_entities_at_position(new_board, (1, 1)) == [{"name": "floor", "icon": "▯"}]
+    True
+    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}, {"name": "small bug", "icon": "*"}]}
+    >>> get_entities_at_position(new_board, (1, 1)) == [
+    ...     {"name": "floor", "icon": "▯"}, {"name": "small bug", "icon": "*"}]
+    True
+    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}]}
+    >>> get_entities_at_position(new_board, (1, 5)) == [{"name": "void", "icon": ""}]
+    False
+    """
+    try:
+        entity = board[position]
+    except KeyError:
+        entity = spawn_entity(board, position, name="void")
+    return entity
 
 
 def main():
@@ -177,16 +243,18 @@ def main():
     Drive the program.
     """
     clear_screen()
-    draw_board({(1, 1): {"icon": "a"}})
+    draw_board({(1, 1): [{"icon": "a"}]})
     input()
     clear_screen()
-    draw_board({(4, 2): {"icon": "a"}})
+    board = load_board_from_file(StringIO(" 1 1 \n  *\n-._.-"))
+    draw_board(board)
     input()
     clear_screen()
     board = {}
     spawn_entity(board, name="wall", position=(1, 1))
     spawn_entity(board, name="wall", position=(1, 2))
     draw_board(board)
+
 
 if __name__ == '__main__':
     main()
