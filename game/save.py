@@ -3,6 +3,7 @@ Save files.
 """
 import pathlib
 import dill as pickle
+from sys import stderr
 
 from game import relative_path
 from game.ansi_actions.cursor import cursor_set
@@ -91,7 +92,7 @@ def load_save_from_file(file_path, print_status=False):
     finally:
         if print_status:
             cursor_set(get_screen_size()[0] - len(status), get_screen_size()[1])
-            print(status, end="")
+            print(status, end="", file=stderr)
         return save_data
 
 
