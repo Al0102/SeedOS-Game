@@ -55,7 +55,7 @@ def run_help(seed_system, tokens):
             status_message = "|Could not find help document|\n" + tokens[0]
         else:
             send_messages(seed_system, format_long_description(command_help).split("\n"))
-            status_message = f"Showed help documentation for {tokens[0]}"
+            status_message = f"|Showed help documentation|\n{tokens[0]}"
     else:
         for command_help in command_documents.values():
             send_message(seed_system, format_short_description(command_help))
