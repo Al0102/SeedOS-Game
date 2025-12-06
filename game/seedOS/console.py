@@ -1,8 +1,11 @@
 """
 Main user interaction with the system via a console.
 """
+from collections.abc import Callable
 from time import sleep
 
+from game.menu import create_menu
+from game.sound.effects import get_effects
 from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
 from game.terminal.input import start_text_input, init_key_input, poll_key_press
 from game.terminal.screen import get_screen_size, clear_screen
@@ -52,6 +55,7 @@ def send_message(seed_system, message):
         send_message(seed_system, message[width:])
     else:
         seed_system["message_history"].append(message)
+    display_message_history(seed_system)
 
 
 def send_messages(seed_system, messages, delay=0.5):
@@ -121,6 +125,8 @@ def start_prompt_user():
     text_input = start_text_input(
         column=3, row=get_screen_size()[1] - 1, max_width=get_console_dimensions()["input"][0] - 4)
     draw_user_prompt()
+    get_effects()["mouse_click"].play(loop=True)
+    get_effects()["mouse_click"].pause()
 
     def update_prompt(key_press):
         """
@@ -130,13 +136,44 @@ def start_prompt_user():
         :precondition: key_press must be a valid key code string
         :postcondition: update the text input prompt for the user
         :postcondition: the text_input will return a string of the user input or None
-        :return: a string representing the result of teh text input from the user,
+        :return: a string representing the result of the text input from the user,
                  or None if the input is unfinished
         """
+        get_effects()["mouse_click"].resume()
         draw_user_prompt()
-        return text_input(key_press)
+        sleep(0.05)
+        get_effects()["mouse_click"].pause()
+        result = text_input(key_press)
+        if not result is None:
+            get_effects()["mouse_click"].stop()
+        return result
 
     return update_prompt
+
+
+def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
+    prompt_user = start_prompt_user()
+    while True:
+        output = prompt_user(poll_key_press(game_data["key_input"]))
+        if output is None:
+            continue
+        if is_valid(output):
+            return output
+        else:
+            send_message(game_data["seed_system"], "Invalid Input")
+
+
+def do_menu_prompt(game_data, *options):
+    menu = create_menu(
+        4, get_console_dimensions()["output"][1] - len(options) + 1,
+        *options)
+    send_messages(game_data["seed_system"], ["" for _ in range(len(options) + 2)], 0)
+    while True:
+        menu["draw_menu"]()
+        result = menu["update_menu"](poll_key_press(game_data["key_input"]))
+        if not result is None:
+            send_message(game_data["seed_system"], result)
+            return result
 
 
 def main():
