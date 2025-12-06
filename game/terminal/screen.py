@@ -30,7 +30,7 @@ def get_screen_size():
         return (dimensions.columns, dimensions.lines)
 
 
-def point_within_screen(point: tuple[int, int]) -> tuple[bool, ...]:
+def point_within_screen(point: tuple | list) -> tuple:
     """
     Return <point> mapped to whether the value is within the terminal.
 

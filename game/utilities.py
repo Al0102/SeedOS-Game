@@ -79,7 +79,7 @@ def longest_string(string_list):
     return (string_list[lengths.index(longest_length)], longest_length)
 
 
-def sum_vectors(*vectors: tuple[float, ...] | list[float]) -> tuple[float, ...]:
+def sum_vectors(*vectors: tuple | list) -> tuple:
     """
     Return the sum of <vectors>.
 
