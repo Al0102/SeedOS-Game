@@ -30,6 +30,20 @@ def get_screen_size():
         return (dimensions.columns, dimensions.lines)
 
 
+def point_within_screen(point: tuple[int, int]) -> tuple[bool, ...]:
+    """
+    Return <point> mapped to whether the value is within the terminal.
+
+    Returned tuple has form: (<column_within boolean>, <row_within boolean>)
+
+    :param point: a tuple of 2 integers representing the position to check
+    :precondition: point must be a tuple of 2 integers
+    :postcondition: get whether each value of <point> is within the terminal screen
+    :postcondition: returned tuple has form: (<column_within boolean>, <row_within boolean>)
+    :return: a tuple of 2 booleans representing whether each value in <point> is within the terminal screen
+    """
+    return tuple(map(lambda coordinate: 0 < coordinate[0] <= coordinate[1], zip(point, get_screen_size())))
+
 def main():
     """
     Drive the program.
