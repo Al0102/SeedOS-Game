@@ -7,7 +7,7 @@ from game.sound.effects import get_effects
 from game.terminal.draw import create_text_area, draw_text_box
 from game.terminal.input import init_key_input, pull_input
 from game.terminal.screen import clear_screen, get_screen_size
-from game.utilities import longest_string
+from game.utilities import longest_string, remove_escape_codes
 
 
 def create_menu(column, row, *options, default=0):
@@ -109,6 +109,7 @@ def create_menu(column, row, *options, default=0):
 
 
 def get_centered_menu_position(*options):
+    options = list(map(remove_escape_codes, options))
     menu_column = get_screen_size()[0] // 2 - longest_string(options)[1] - 4
     menu_row = (get_screen_size()[1] - len(options)) // 2
     return (menu_column, menu_row)
