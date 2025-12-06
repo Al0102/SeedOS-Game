@@ -45,11 +45,15 @@ def game_loop(game_data):
     :postcondition: run the game
     """
     while True:
+        # Start the scene
         if not game_data["active_scene"]["open"] is None:
             game_data["active_scene"]["open"](game_data)
+        # Run the scene
         next_scene = game_data["active_scene"]["update"](game_data)
+        # Close the scene
         if not game_data["active_scene"]["exit"] is None:
             game_data["active_scene"]["exit"](game_data)
+        # Switch the scene
         if next_scene is None:
             return
         game_data["previous_scene"] = game_data["active_scene"]
