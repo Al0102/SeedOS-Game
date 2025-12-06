@@ -6,6 +6,7 @@ from game.save import save_data_to_file
 from game.seedOS import init_seed_system, init_aphid
 from game.seedOS.console import (
     send_messages, do_validated_prompt, do_menu_prompt)
+from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen
 
 
@@ -68,7 +69,7 @@ def get_seedos_signup_scene():
             "Enter your name:"))
         name = do_validated_prompt(
             game_data,
-            lambda name_output: len(name_output) != 0 and not "\033" in name_output)
+            lambda name_output: len(name_output.strip()) != 0 and not "\033" in name_output)
         game_data["seed_system"]["aphid"] = init_aphid(name)
 
         # Ask user if they want to save their new game to a file
@@ -98,6 +99,7 @@ def get_seedos_signup_scene():
             "Done!",
             style("Press any key to continue", "bold", "rapid_blink", "black", "background_yellow")
         ), 1)
+        poll_key_press(game_data["key_input"])
 
         return "seedos_console"
 
