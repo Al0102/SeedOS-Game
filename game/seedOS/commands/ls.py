@@ -4,7 +4,7 @@ Clear the screen.
 from game.ansi_actions.style import style
 from game.seedOS import create_command
 from game.seedOS.console import send_messages, send_message
-from game.seedOS.files import get_current_folder_contents
+from game.seedOS.files import get_folder_contents
 
 
 def get_ls_command():
@@ -40,9 +40,9 @@ def run_ls(seed_system, tokens):
     else:
         send_message(
             seed_system,
-            f"{style(seed_system['aphid']['current_folder'], 'underline', 'yellow')}/")
+            style(f"{seed_system['aphid']['current_folder']}/", 'underline', 'yellow'))
         send_messages(
             seed_system,
-            get_current_folder_contents(seed_system, seed_system["aphid"]["current_folder"]))
+            get_folder_contents(seed_system, seed_system["aphid"]["current_folder"]))
         status_message = f"|Displayed directory contents|\n{seed_system['aphid']['current_folder']}"
     return (status, status_message)
