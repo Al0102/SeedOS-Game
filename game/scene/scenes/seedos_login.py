@@ -4,9 +4,8 @@ Load save data from file based on username.
 from game.ansi_actions.cursor import cursor_set
 from game.ansi_actions.style import style
 from game.save import load_saves_file_paths, load_save_from_file
-from game.menu import create_menu, centered_menu_position
-from game.seedOS.console import send_message
-from game.terminal.input import poll_key_press
+from game.menu import get_centered_menu_position
+from game.seedOS.console import do_menu_prompt
 from game.terminal.screen import clear_screen
 
 
@@ -27,8 +26,7 @@ def get_seedos_login_scene():
     """
     save_files = []
     corrupted_files_names = set()
-    menu = {}
-    menu_column, menu_row = 1, 1
+    options = []
 
     def open_seedos_login(game_data):
         """
@@ -38,20 +36,16 @@ def get_seedos_login_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: reset the main menu by creating a new menu
         """
-        nonlocal save_files, menu, menu_column, menu_row
+        nonlocal save_files, options
         save_files = load_saves_file_paths(game_data)
         options = list(set(map(lambda file: file.stem, save_files)) - corrupted_files_names)
         if len(options) <= 5:
             options.insert(0, style("NEW", "bold", "yellow"))
         options.insert(0, style("Back to main menu", "bold", "red"))
-        menu_column, menu_row = centered_menu_position(options)
-        menu = create_menu(
-            menu_column, menu_row,
-            *options)
+        menu_column, menu_row = get_centered_menu_position(*options)
         clear_screen()
         cursor_set(menu_column, menu_row - 1)
         print("Choose a save:", end="", flush=False)
-        menu["draw_menu"]()
 
     def exit_seedos_login(game_data):
         """
@@ -61,9 +55,9 @@ def get_seedos_login_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS login scene
         """
-        clear_screen()
         if game_data["seed_system"]:
             game_data["progress"]["just_loaded"] = True
+        clear_screen()
 
     def update_seedos_login(game_data):
         """
@@ -79,15 +73,13 @@ def get_seedos_login_scene():
                  or None to signify game exit
         """
         nonlocal corrupted_files_names
-        while True:
-            inputted = poll_key_press(game_data["key_input"])
-            selection = menu["update_menu"](inputted)
-            if selection is None:
-                continue
-            if selection == style("Back to main menu", "bold", "red"):
-                return "main_menu"
-            if selection == style("NEW", "bold", "yellow"):
-                return "seedos_signup"
+
+        selection = do_menu_prompt(game_data, *options, style_name="centered")
+        if selection == style("Back to main menu", "bold", "red"):
+            return "main_menu"
+        elif selection == style("NEW", "bold", "yellow"):
+            return "seedos_signup"
+        else:
             data = load_save_from_file(
                 list(filter(lambda file: file.stem == selection, save_files))[0])
             if data:
@@ -95,7 +87,8 @@ def get_seedos_login_scene():
                 return "seedos_console"
             else:
                 corrupted_files_names.add(selection)
-                open_seedos_login(game_data)
+                # Reload scene without corrupted options
+                return "seedos_login"
 
     return {
         "name": "seedos_login",

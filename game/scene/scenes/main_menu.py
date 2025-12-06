@@ -1,8 +1,7 @@
 """
 Main menu: Start or Quit.
 """
-from game.menu import create_menu, get_centered_menu_position
-from game.terminal.input import poll_key_press
+from game.seedOS.console import do_menu_prompt
 from game.terminal.screen import clear_screen
 
 
@@ -22,21 +21,6 @@ def get_main_menu_scene():
     :return: a dictionary representing the data for the main menu scene
     """
     options = ("Start", "Quit")
-    menu_column, menu_row = get_centered_menu_position(options)
-    menu = {}
-
-    def open_main_menu(_):
-        """
-        Reset the menu.
-
-        :postcondition: reset the main menu by creating a new menu
-        """
-        nonlocal menu
-        menu = create_menu(
-            menu_column, menu_row,
-            *options)
-        clear_screen()
-        menu["draw_menu"]()
 
     def update_main_menu(game_data):
         """
@@ -51,19 +35,15 @@ def get_main_menu_scene():
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """
-        while True:
-            inputted = poll_key_press(game_data["key_input"])
-            selection = menu["update_menu"](inputted)
-            if selection is None:
-                continue
-            if selection == "Start":
-                return "seedos_login"
-            if selection == "Quit":
-                return "quit"
+        clear_screen()
+        selection = do_menu_prompt(game_data, *options, style_name="centered")
+        if selection == "Start":
+            return "seedos_login"
+        else:
+            return "quit"
 
     return {
         "name": "main_menu",
-        "open": open_main_menu,
+        "open": None,
         "update": update_main_menu,
         "exit": None}
-
