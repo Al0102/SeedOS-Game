@@ -79,6 +79,27 @@ def longest_string(string_list):
     return (string_list[lengths.index(longest_length)], longest_length)
 
 
+def sum_vectors(*vectors: tuple[float, ...] | list[float]) -> tuple[float, ...]:
+    """
+    Return the sum of <vectors>.
+
+    :param vectors: a tuple of lists/tuples of floats representing the vectors to add
+    :precondition: vectors must be a tuple of lists/tuples of floats
+    :precondition: vectors must have at least 2 vectors
+    :precondition: all vectors in <vectors> must be of equal length
+    :postcondition: calculate the scalar sum of <vectors>
+    :return: a tuple of floats representing the scalar sum of <vectors>
+
+    >>> sum_vectors((0, 0), (0, 0))
+    (0, 0)
+    >>> sum_vectors((0, 1), (5, -10), (4, 8))
+    (9, -1)
+    >>> sum_vectors((0, 1, 2), (3, 4, 5), (6, 7, 8))
+    (9, 12, 15)
+    """
+    return tuple(map(sum, zip(*vectors)))
+
+
 def main():
     print(get_escape_codes_indices("\033[1mYes cod\033[0mes"))
     print(remove_escape_codes("\033[1mYes cod\033[0mes"))
