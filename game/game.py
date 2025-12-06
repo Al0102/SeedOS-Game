@@ -41,7 +41,7 @@ def game_loop(game_data):
     Drive the main game loop.
 
     :param game_data: a dictionary representing the data needed to run the game
-    :precondition game_data: must be a well-formed dictionary of game data
+    :precondition: game_data must be a well-formed dictionary of game data
     :postcondition: run the game
     """
     while True:
