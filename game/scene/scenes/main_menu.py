@@ -1,10 +1,9 @@
 """
 Main menu: Start or Quit.
 """
-from game.menu import create_menu, centered_menu_position
-from game.sound.effects import chance_sound
-from game.terminal.input import pull_input, poll_key_press
-from game.terminal.screen import get_screen_size, clear_screen
+from game.menu import create_menu, get_centered_menu_position
+from game.terminal.input import poll_key_press
+from game.terminal.screen import clear_screen
 
 
 def get_main_menu_scene():
@@ -23,7 +22,7 @@ def get_main_menu_scene():
     :return: a dictionary representing the data for the main menu scene
     """
     options = ("Start", "Quit")
-    menu_column, menu_row = centered_menu_position(options)
+    menu_column, menu_row = get_centered_menu_position(options)
     menu = {}
 
     def open_main_menu(_):
