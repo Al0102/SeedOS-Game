@@ -3,6 +3,7 @@ Terminal simulator.
 """
 from game.seedOS.command import create_command
 from game.seedOS.commands.command_root import create_command_root
+from game.seedOS.files import create_file_tree
 
 
 def init_seed_system():
@@ -24,7 +25,7 @@ def init_seed_system():
     return {
         "aphid": None,
         "command_root": create_command_root(),
-        "file_tree": {},
+        "file_tree": create_file_tree(),
         "message_history": [],
         "active_program": None}
 
