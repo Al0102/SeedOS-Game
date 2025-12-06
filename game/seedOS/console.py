@@ -152,14 +152,16 @@ def start_prompt_user():
     return update_prompt
 
 
-def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
+def do_validated_prompt(game_data: dict, is_valid: Callable | None) -> str:
     """
     Run a validated user prompt in the console.
 
     :param game_data: a dictionary representing the data needed to run the game
-    :param is_valid: a callable function representing the acceptance condition
+    :param is_valid: a callable function representing the acceptance condition,
+           or None if all results are accepted
     :precondition: game_data must be a well-formed dictionary of game data that has "key_input"
-    :precondition: is_valid must be a callable function that returns a boolean or Truthy/Falsy value
+    :precondition: is_valid must be a callable function that returns a boolean or Truthy/Falsy value,
+                   or None
     :postcondition: get the result of the user prompt
     :return: a string representing the result of the prompt
     """
@@ -170,10 +172,11 @@ def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
         display_message_history(game_data["seed_system"])
         if output is None:
             continue
-        if is_valid(output):
-            return output
+        if is_valid is None or is_valid(output):
+            break
         else:
             send_message(game_data["seed_system"], "Invalid Input")
+    return output
 
 
 def do_menu_prompt(game_data: dict, *options: str, style_name="prompt") -> str:
