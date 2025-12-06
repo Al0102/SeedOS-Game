@@ -37,7 +37,7 @@
   {
     "name": "ls",
     "options": [],
-    "short_description": "Shows the contents of the current working directory.",
+    "short_description": "Shows the path and contents of the current working directory.",
     "long_description": [
       "Syntax:",
       "  ls",
