@@ -50,12 +50,15 @@ def run_command(seed_system, command_data, tokens):
 
 
 def send_command(seed_system, command_string):
-    send_message(seed_system, f"> {command_string}")
+    send_messages(seed_system, (
+        "-----",
+        f"> {command_string}",
+        ""), 0)
     tokens = command_string.strip().split()
     status = status_report(
         *run_command(seed_system, seed_system["command_root"], tokens))
     send_messages(seed_system, status["message"].split("\n"))
-    send_messages(seed_system, ("-----", ""), 0)
+    send_message(seed_system, "")
     return status
 
 
