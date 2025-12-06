@@ -9,23 +9,22 @@ def create_file_tree():
     return {
         "seed": {
             "name": "seed",
-            "type": "folder",
-        },
+            "type": "folder"},
         "seed/Welcome.txt": {
             "name": "Welcome",
             "type": "file",
             "extension": "txt",
             "data": {
-                "text": relative_path("assets/files/Welcome.txt")
-            }
-        },
-        "seed/seedOS": {},
-        "seed/documents": {},
+                "text": relative_path("assets/files/Welcome.txt")}},
+        "seed/seedOS": {
+            "name": "seedOS",
+            "type": "folder"},
+        "seed/documents": {
+            "name": "documents",
+            "type": "folder"},
         "seed/applications": {
-            "name": "seed",
-            "type": "folder",
-        }
-    }
+            "name": "applications",
+            "type": "folder"}}
 
 
 def to_path(path_tokens: list | tuple) -> str:
@@ -48,25 +47,25 @@ def to_path(path_tokens: list | tuple) -> str:
     return "/".join(path_tokens)
 
 
-def get_parent_directory_path(file_path: str) -> str:
+def get_parent_folder_path(file_path: str) -> str:
     """
-    Get the parent directory path string of <file_path>.
+    Get the parent folder path string of <file_path>.
 
-    Return an empty string if no parent directory was found.
+    Return an empty string if no parent folder was found.
 
     :param file_path: a string representing the full path to a file/folder
     :precondition: file_path must be a path-like string with tokens separated by "/"
     :precondition: file_path cannot be an empty string, nor only "/", nor only spaces
-    :postcondition: get the parent directory path string of <file_path>,
-                    or an empty string if <file_path> has no parent directory
-    :return: a string representing the parent directory path string of <file_path>,
-                    or an empty string if <file_path> has no parent directory
+    :postcondition: get the parent folder path string of <file_path>,
+                    or an empty string if <file_path> has no parent folder
+    :return: a string representing the parent folder path string of <file_path>,
+                    or an empty string if <file_path> has no parent folder
 
-    >>> get_parent_directory_path("root")
+    >>> get_parent_folder_path("root")
     ''
-    >>> get_parent_directory_path("root/abc")
+    >>> get_parent_folder_path("root/abc")
     'root'
-    >>> get_parent_directory_path("root/abc/123/next/")
+    >>> get_parent_folder_path("root/abc/123/next/")
     'root/abc/123'
     """
     return to_path(tokenize_path(file_path)[:-1])
@@ -77,7 +76,7 @@ def get_folder_contents(seed_system: dict, folder_path, full_path=False) -> tupl
     Get the contents (dictionaries) at the folder path in <seed_system>.
 
     :param seed_system: a dictionary representing the currently active seedOS system
-    :param folder_path: a string representing path of the directory to get the contents of
+    :param folder_path: a string representing path of the folder to get the contents of
     :param full_path: a boolean representing whether to return paths as absolute or only the child name
     :precondition: seed_system must be a well-formed seed_system dictionary with key-value pair:
                        "file_tree": <dictionary>
@@ -88,11 +87,47 @@ def get_folder_contents(seed_system: dict, folder_path, full_path=False) -> tupl
     if not folder_path in seed_system["file_tree"]:
         raise FileNotFoundError(style(f"{folder_path} does not exist", "red"))
     children = filter(
-        lambda file_path: get_parent_directory_path(file_path) == folder_path,
+        lambda file_path: get_parent_folder_path(file_path) == folder_path,
         seed_system["file_tree"].keys())
     if not full_path:
         children = map(lambda path: path.split("/")[-1], children)
     return tuple(children)
+
+
+def convert_relative_path_to_absolute(current_path: str, new_relative_path: str) -> str:
+    """
+    Get an absolute path from a relative (path with ".." or ".") path.
+
+    "." - current folder
+    ".." - parent folder
+
+    :param current_path: a string representing the absolute path of the current working folder
+    :param new_relative_path: a string representing the relative path from <current_path>
+    :preconditon: current_path must be a path-string with tokens separated by "/"
+    :preconditon: new_relative_path must be a string with tokens separated by "/"
+    :postcondition: find the absolute path from <current_path> and <new_relative_path>
+    :return: a path-like string representing the absolute path based on <current_path> and <new_relative_path>
+
+    >>> convert_relative_path_to_absolute("seed", ".")
+    'seed'
+    >>> convert_relative_path_to_absolute("seed/school/", "../../../work/files/12_0_2025")
+    'seed/work/files/12_0_2025'
+    >>> convert_relative_path_to_absolute("seed/school/", "../../../../text.txt")
+    'seed/text.txt'
+    """
+    relative_tokens = tokenize_path(new_relative_path)
+    if not (".." in relative_tokens or "." in relative_tokens) or len(new_relative_path) == 0:
+        return f"{current_path}/{new_relative_path}".strip("/ ")
+    first_token = relative_tokens.pop(0)
+    if first_token == "..":
+        new_current_path = get_parent_folder_path(current_path)
+        if new_current_path == "":
+            new_current_path = current_path
+    elif first_token == ".":
+        new_current_path = current_path
+    else:
+        new_current_path = f"{current_path}/{first_token}",
+    return convert_relative_path_to_absolute(new_current_path, to_path(relative_tokens))
 
 
 def tokenize_path(file_path):
@@ -102,7 +137,7 @@ def tokenize_path(file_path):
     A path token is a single string without slashes representing something in the filetree.
 
     :param file_path: a path-like string representing a path
-    :precondition: file_path must be a path-like string representing a path
+    :precondition: file_path must be a path-like string with tokens separated by "/"
     :postcondition: get the tokens in <file_path>
     :return: a list of strings representing the path tokens in <file_path>
 

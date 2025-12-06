@@ -37,11 +37,11 @@
   {
     "name": "ls",
     "options": [],
-    "short_description": "Shows the path and contents of the current working directory.",
+    "short_description": "Shows the path and contents of the current working folder.",
     "long_description": [
       "Syntax:",
       "  ls",
-      "  - show the contents of the current working directory"
+      "  - show the contents of the current working folder"
     ]
   },
   {
@@ -49,13 +49,13 @@
     "options": [
       "[path]"
     ],
-    "short_description": "Changes the current working directory.",
+    "short_description": "Changes the current working folder.",
     "long_description": [
-      "'.' is the current directory",
-      "'..' is the parent directory",
+      "'.' is the current folder",
+      "'..' is the parent folder",
       "Syntax:",
       "  cd",
-      "  - jump to root directory (usually 'seed/')",
+      "  - jump to root folder (usually 'seed')",
       "  cd [path]",
       "  - change to the specified relative path')"
     ]
@@ -67,8 +67,8 @@
     ],
     "short_description": "Shows the contents of a text file.",
     "long_description": [
-      "'.' is the current directory",
-      "'..' is the parent directory",
+      "'.' is the current folder",
+      "'..' is the parent folder",
       "Syntax:",
       "  look <path>",
       "  - look at the contents of the specified text file"
@@ -81,8 +81,8 @@
     ],
     "short_description": "Run a sprout file.",
     "long_description": [
-      "'.' is the current directory",
-      "'..' is the parent directory",
+      "'.' is the current folder",
+      "'..' is the parent folder",
       "Syntax:",
       "  do <path>",
       "  - run the specified program"
