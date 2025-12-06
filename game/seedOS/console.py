@@ -4,7 +4,8 @@ Main user interaction with the system via a console.
 from collections.abc import Callable
 from time import sleep
 
-from game.menu import create_menu
+from game.ansi_actions.style import style
+from game.menu import create_menu, get_centered_menu_position
 from game.sound.effects import get_effects
 from game.terminal.draw import create_text_area, draw_text_box, draw_rectangle
 from game.terminal.input import start_text_input, init_key_input, poll_key_press
@@ -140,18 +141,28 @@ def start_prompt_user():
                  or None if the input is unfinished
         """
         get_effects()["mouse_click"].resume()
-        draw_user_prompt()
         sleep(0.05)
         get_effects()["mouse_click"].pause()
         result = text_input(key_press)
         if not result is None:
             get_effects()["mouse_click"].stop()
+            draw_user_prompt()
         return result
 
     return update_prompt
 
 
 def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
+    """
+    Run a validated user prompt in the console.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :param is_valid: a callable function representing the acceptance condition
+    :precondition: game_data must be a well-formed dictionary of game data that has "key_input"
+    :precondition: is_valid must be a callable function that returns a boolean or Truthy/Falsy value
+    :postcondition: get the result of the user prompt
+    :return: a string representing the result of the prompt
+    """
     prompt_user = start_prompt_user()
     while True:
         output = prompt_user(poll_key_press(game_data["key_input"]))
@@ -163,16 +174,42 @@ def do_validated_prompt(game_data: dict, is_valid: Callable) -> str:
             send_message(game_data["seed_system"], "Invalid Input")
 
 
-def do_menu_prompt(game_data, *options):
-    menu = create_menu(
-        4, get_console_dimensions()["output"][1] - len(options) + 1,
-        *options)
-    send_messages(game_data["seed_system"], ["" for _ in range(len(options) + 2)], 0)
+def do_menu_prompt(game_data: dict, *options: str, style_name="prompt") -> str:
+    """
+    Run a menu.
+
+    Styles of menu include:
+        "prompt": run inline with the console like a text prompt
+        "centered": run centered on the terminal screen
+        "position:<column>,<row>": run with a position at <column>, <row>
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :param options: strings representing the menu's option names
+    :param style_name: (default "prompt") a string representing the alignment style of the menu
+    :precondition: game_data must be a well-formed dictionary of game data that has "key_input"
+    :precondition: options must hold at least one string
+    :precondition: style_name must be a string of name: "prompt" or "centered"
+    :postcondition: get the result of the menu prompt
+    :postcondition: add padding lines to console message history if <style_name> is "prompt"
+    :raises ValueError: if style_nam ei snot a valid menu style
+    :return: a string representing the result of the prompt
+    """
+    if style_name == "prompt":
+        position = (4, get_console_dimensions()["output"][1] - len(options) + 1)
+        send_messages(game_data["seed_system"], ["" for _ in range(len(options) + 2)], 0)
+    elif style_name == "centered":
+        position = get_centered_menu_position(*options)
+    elif "position" in style_name:
+        position = tuple(map(int, style_name.split(":")[1].split(',')))
+    else:
+        raise ValueError(style("Invalid menu style: {style}"), "red")
+    menu = create_menu(*position, *options)
+    menu["draw_menu"]()
     while True:
-        menu["draw_menu"]()
         result = menu["update_menu"](poll_key_press(game_data["key_input"]))
         if not result is None:
-            send_message(game_data["seed_system"], result)
+            if style_name == "prompt":
+                send_message(game_data["seed_system"], result)
             return result
 
 
