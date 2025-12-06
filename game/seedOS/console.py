@@ -129,12 +129,14 @@ def start_prompt_user():
     get_effects()["mouse_click"].play(loop=True)
     get_effects()["mouse_click"].pause()
 
-    def update_prompt(key_press):
+    def update_prompt(key_press, flush=False):
         """
         Update the text_input for the prompt and draws it's border.
 
         :param key_press: a string representing the key code of the pressed key input
+        :param flush: (default False) a boolean representing to flush the changes to output right away
         :precondition: key_press must be a valid key code string
+        :precondition: flush must be a boolean
         :postcondition: update the text input prompt for the user
         :postcondition: the text_input will return a string of the user input or None
         :return: a string representing the result of the text input from the user,
@@ -143,7 +145,7 @@ def start_prompt_user():
         get_effects()["mouse_click"].resume()
         sleep(0.05)
         get_effects()["mouse_click"].pause()
-        result = text_input(key_press)
+        result = text_input(key_press, flush)
         if not result is None:
             get_effects()["mouse_click"].stop()
             draw_user_prompt()
@@ -166,10 +168,9 @@ def do_validated_prompt(game_data: dict, is_valid: Callable | None) -> str:
     :return: a string representing the result of the prompt
     """
     prompt_user = start_prompt_user()
-    prompt_user("escape")
+    prompt_user("escape", flush=True)
     while True:
-        output = prompt_user(poll_key_press(game_data["key_input"]))
-        display_message_history(game_data["seed_system"])
+        output = prompt_user(poll_key_press(game_data["key_input"]), flush=True)
         if output is None:
             continue
         if is_valid is None or is_valid(output):

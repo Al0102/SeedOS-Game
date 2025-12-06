@@ -2,6 +2,7 @@
 OS dependent inputs with getch and msvcrt.
 """
 import os
+from collections.abc import Callable
 from string import printable
 from game.ansi_actions import cursor
 from game.ansi_actions.style import style
@@ -187,7 +188,7 @@ def pull_input(input_info, amount=1, flush=False):
     return inputs
 
 
-def start_text_input(column, row, max_width=None, hide=False):
+def start_text_input(column: int, row: int, max_width=None, hide=False) -> Callable:
     """
     Return a function for getting text input from the user.
 
@@ -216,12 +217,14 @@ def start_text_input(column, row, max_width=None, hide=False):
     # The number of characters beyond max-width
     draw_index = 0
 
-    def update_text_input(key_press):
+    def update_text_input(key_press: str, flush=False) -> str | None:
         """
         Get text input from the user.
 
         :param key_press: a string representing the key code of the pressed key input
+        :param flush: (default False) a boolean representing to flush the changes to output right away
         :precondition: key_press must be a valid key code string
+        :precondition: flush must be a boolean
         :postcondition: get text input from the user, or continue the prompt
         :postcondition: the prompt is completed when "enter" is passed
         :return: a string representing the text input from the user,
@@ -245,12 +248,15 @@ def start_text_input(column, row, max_width=None, hide=False):
         if not hide:
             draw_index = max(0, min(len(string_input) - max_width, cursor_at - max_width + draw_index))
             text_area["text"] = "".join(string_input[draw_index:draw_index + min(len(string_input), max_width)])
-            draw_text_box(text_area=text_area, overwrite=True)
+            draw_text_box(text_area=text_area, overwrite=True, flush_output=flush)
             cursor.cursor_set(min(max_width + column, max(column, column + cursor_at - draw_index)), row)
+            cursor_string = ""
             try:
-                print(style(string_input[cursor_at], "underline"), end="")
+                cursor_string = string_input[cursor_at]
             except IndexError:
-                print(style(" ", "underline"), end="")
+                cursor_string = " "
+            finally:
+                print(style(cursor_string, "underline"), end="", flush=flush)
 
         return None
 
