@@ -1,9 +1,8 @@
 """
-Save and shutdown seedOS, then return to main main menu.
+Save and shutdown seedOS, then return to main menu.
 """
 from game.ansi_actions.style import style
 from game.save import save_data_to_file
-from game.sound.effects import get_effects
 from game.seedOS.console import (
     display_message_history, draw_user_prompt,
     send_message, send_messages, do_validated_prompt)

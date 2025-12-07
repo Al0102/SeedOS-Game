@@ -1,16 +1,13 @@
 """
-Primary game loop for file navigation.
+Looking inside a txt file.
 """
-from io import StringIO
 from sys import stderr
 
 from game.ansi_actions.style import style
-from game.terminal.draw import create_text_area, draw_text_box
+from game.terminal.draw import draw_text_box
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen, get_screen_size
-from game.seedOS.command import send_command
-from game.seedOS.console import display_message_history, send_message, send_messages, \
-    do_validated_prompt
+from game.seedOS.console import display_message_history, send_message, send_messages
 
 
 def get_seedos_look_scene():
