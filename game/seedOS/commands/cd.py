@@ -44,6 +44,11 @@ def run_cd(seed_system, tokens):
         elif seed_system["file_tree"][new_path]["type"] != "folder":
             status = "argument_error"
             status_message = f"|Path must be a folder|\n{style(new_path, 'underline')}"
+        elif seed_system["file_tree"][new_path]["privilege_required"] > seed_system["aphid"]["privilege"]:
+            status = "privilege_error"
+            status_message = (
+                "|Privilege too low|\n"
+                f"{seed_system['aphid']['privilege']} < {seed_system['file_tree'][new_path]['privilege_required']}")
         else:
             seed_system["aphid"]["current_folder"] = new_path
             status_message = f"|Changed folder to path|\n{style(new_path, 'underline')}"

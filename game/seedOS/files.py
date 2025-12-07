@@ -9,22 +9,27 @@ def create_file_tree():
     return {
         "seed": {
             "name": "seed",
-            "type": "folder"},
+            "type": "folder",
+            "privilege_required": 0},
         "seed/Welcome.txt": {
             "name": "Welcome",
             "type": "file",
+            "privilege_required": 0,
             "extension": "txt",
             "data": {
                 "text": relative_path("assets/files/Welcome.txt")}},
         "seed/seedOS": {
             "name": "seedOS",
+            "privilege_required": 3,
             "type": "folder"},
         "seed/documents": {
             "name": "documents",
-            "type": "folder"},
+            "type": "folder",
+            "privilege_required": 1},
         "seed/applications": {
             "name": "applications",
-            "type": "folder"}}
+            "type": "folder",
+            "privilege_required": 1}}
 
 
 def to_path(path_tokens: list | tuple) -> str:
