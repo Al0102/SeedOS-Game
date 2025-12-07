@@ -5,7 +5,7 @@ import re
 from typing import Any
 
 
-def get_escape_codes_indices(text):
+def get_escape_codes_indices(text: str) -> list:
     """
     Get all ANSI escape codes and their indices from the string.
 
@@ -33,7 +33,7 @@ def get_escape_codes_indices(text):
     return codes
 
 
-def remove_escape_codes(text):
+def remove_escape_codes(text: str) -> str:
     """
     Remove all ANSI escape codes from the string.
 
@@ -53,7 +53,7 @@ def remove_escape_codes(text):
     return ansi_escape.sub('', text)
 
 
-def longest_string(string_list):
+def longest_string(string_list: list | tuple) -> tuple[str, int] | None:
     """
     Find the longest string and its length in <iterable>.
 
@@ -146,6 +146,29 @@ def targets_with_key(key_name: Any, *targets: dict) -> tuple:
     True
     """
     return tuple(filter(lambda target: key_name in target.keys(), targets))
+
+
+def get_direction_vectors() -> dict:
+    """
+    Return a dirctionary of directions names as vectors.
+
+    A vector is of tuple of integers with the form (<x-value>, <y-value>).
+
+    :postcondition: get a dictionary of directions and their corresponding vector tuples
+    :return: a dictionary of two integers representing the corresponding vector of the move direction, <move>
+
+    >>> get_direction_vectors() == {
+    ...     "up": (0, -1),
+    ...     "left": (-1, 0),
+    ...     "right": (1, 0),
+    ...     "down": (0, 1)}
+    True
+    """
+    return {
+        "up": (0, -1),
+        "left": (-1, 0),
+        "right": (1, 0),
+        "down": (0, 1)}
 
 
 def main():
