@@ -53,8 +53,9 @@ def run_look(seed_system, tokens):
                     "|Privilege too low|\n"
                     f"{seed_system['aphid']['privilege']} < {path_data['privilege_required']}")
             else:
-                seed_system["aphid"]["current_folder"] = new_path
-                status_message = f"|Changed folder to path|\n{style(new_path, 'underline')}"
+                seed_system["active_program"] = "seedos_look"
+                seed_system["active_file"] = path_data
+                status_message = f"|Looked inside text file|\n{style(new_path, 'underline')}"
     return (status, status_message)
 
 

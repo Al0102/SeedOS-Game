@@ -1,4 +1,3 @@
-
 ## Welcome to SeedOS! ##
 
 Seed is a revolutionary new system that gets you closer than ever to the metal, literally!
@@ -16,8 +15,8 @@ you are one of our valued early testers (Beta Fish Program).
 While you get the first look at everything,
 precautions must be taken for your safety while we polish things up.
 
-Don’t worry though, this is all temporary while we get things rock solid.
-We’ll send in a package to unlock everything for you shortly.
+Don't worry though, this is all temporary while we get things rock solid.
+We'll send in a package to unlock everything for you shortly.
 
 After all, with SeedOS you can
 __**Grow the system. Your Way**__

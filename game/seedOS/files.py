@@ -17,7 +17,7 @@ def create_file_tree():
             "privilege_required": 0,
             "extension": "txt",
             "data": {
-                "text": relative_path("assets/files/Welcome.txt")}},
+                "text_src": relative_path("assets/files/Welcome.txt")}},
         "seed/seedOS": {
             "name": "seedOS",
             "privilege_required": 3,

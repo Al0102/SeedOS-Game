@@ -3,7 +3,7 @@ Main scene manager.
 """
 from game.scene.scenes import (
     startup, main_menu, quit,
-    seedos_signup, seedos_login, seedos_console, seedos_shutdown
+    seedos_signup, seedos_login, seedos_console, seedos_shutdown, seedos_look
 )
 
 
@@ -21,7 +21,8 @@ def init_scenes():
         "seedos_login": seedos_login.get_seedos_login_scene(),
         "seedos_signup": seedos_signup.get_seedos_signup_scene(),
         "seedos_console": seedos_console.get_seedos_console_scene(),
-        "seedos_shutdown": seedos_shutdown.get_seedos_shutdown_scene()
+        "seedos_shutdown": seedos_shutdown.get_seedos_shutdown_scene(),
+        "seedos_look": seedos_look.get_seedos_look_scene()
     }
 
 

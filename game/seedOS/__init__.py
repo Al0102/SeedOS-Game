@@ -16,7 +16,8 @@ def init_seed_system():
         "command_root": <dictionary of command data>,
         "file_tree": <dictionary of file tree data>,
         "message_history": <list of string outputs to seedOS console>,
-        "active_program": <string program (scene) name or None for seedos_console>
+        "active_program": <string program (scene) name or None for seedos_console>,
+        "active_file": <dictionary of file data or None for active program>
     }
 
     :postcondition: get a new seedOS data dictionary
@@ -27,7 +28,8 @@ def init_seed_system():
         "command_root": create_command_root(),
         "file_tree": create_file_tree(),
         "message_history": [],
-        "active_program": None}
+        "active_program": None,
+        "active_file": None}
 
 
 def init_aphid(name):
