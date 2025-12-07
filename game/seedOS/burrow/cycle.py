@@ -15,6 +15,7 @@ from game.terminal.screen import clear_screen
 from game.utilities import get_direction_vectors, sum_vectors
 
 
+# Template code
 def start_burrow_session(game_data, file_path):
     file = game_data["seed_system"]["file_tree"][file_path]
     try:
