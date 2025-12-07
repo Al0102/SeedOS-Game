@@ -30,13 +30,20 @@ def create_file_tree():
             "name": "logs",
             "type": "folder",
             "privilege_required": 1},
-        "seed/documents/patch.txt": {
+        "seed/documents/logs/patch.txt": {
             "name": "patch",
             "type": "file",
             "extension": "txt",
             "privilege_required": 1,
             "data": {
                 "text_src": relative_path("assets/files/logs_patch.txt")}},
+        "seed/documents/logs/potty_joke.txt": {
+            "name": "potty_joke",
+            "type": "file",
+            "extension": "txt",
+            "privilege_required": 1,
+            "data": {
+                "text_src": relative_path("assets/files/log_joke.txt")}},
         "seed/applications": {
             "name": "applications",
             "type": "folder",
