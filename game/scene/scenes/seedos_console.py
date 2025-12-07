@@ -39,15 +39,8 @@ def get_seedos_console_scene():
         clear_screen()
         handle_progress(game_data)
         game_data["seed_system"]["active_program"] = None
+        game_data["seed_system"]["active_file"] = None
         display_message_history(game_data["seed_system"])
-
-    def exit_seedos_console(_):
-        """
-        Cleans the scene before it is switched.
-
-        :postcondition: exit the seedOS console scene
-        """
-        get_effects()["mouse_click"].stop()
 
     def update_seedos_console(game_data):
         """
@@ -78,7 +71,7 @@ def get_seedos_console_scene():
         "name": "seedos_console",
         "open": open_seedos_console,
         "update": update_seedos_console,
-        "exit": exit_seedos_console}
+        "exit": None}
 
 
 def handle_progress(game_data):
@@ -90,7 +83,6 @@ def handle_progress(game_data):
             game_data["seed_system"],
             f"Welcome, {style(game_data['seed_system']['aphid']['name'], 'green')}")
     if progress["new_user"]:
-        progress["new_user"] = False
         send_messages(game_data["seed_system"], (
             f"Hello {style('beta tester!', 'bold', 'yellow')}",
             "Welcome to SeedOS.",
