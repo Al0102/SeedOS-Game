@@ -38,7 +38,7 @@ def init_aphid(name):
     {
         "name": <string>,
         "privilege": <integer of aphid security clearance>,
-        "current_folder": <string path of current directory>,
+        "current_folder": <string path of current folder>,
         "stability": <float from [0, 1] representing APHID health>}
     }
 

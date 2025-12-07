@@ -73,7 +73,6 @@ def get_seedos_login_scene():
                  or None to signify game exit
         """
         nonlocal corrupted_files_names
-
         selection = do_menu_prompt(game_data, *options, style_name="centered")
         if selection == style("Back to main menu", "bold", "red"):
             return "main_menu"
@@ -95,4 +94,3 @@ def get_seedos_login_scene():
         "open": open_seedos_login,
         "update": update_seedos_login,
         "exit": exit_seedos_login}
-
