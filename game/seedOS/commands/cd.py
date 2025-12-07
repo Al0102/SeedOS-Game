@@ -38,23 +38,24 @@ def run_cd(seed_system, tokens):
         status_message = f"|'cd' expects at most 1 argument: [path]|\n{len(tokens)} > 1"
     elif len(tokens) == 1:
         new_path = convert_relative_path_to_absolute(seed_system["aphid"]["current_folder"], tokens[0])
-        if not new_path in seed_system["file_tree"].keys():
+        try:
+            path_data = seed_system["file_tree"][new_path]
+        except KeyError:
             status = "argument_error"
             status_message = f"|Invalid path|\n{style(new_path, 'underline')}"
-        elif seed_system["file_tree"][new_path]["type"] != "folder":
-            status = "argument_error"
-            status_message = f"|Path must be a folder|\n{style(new_path, 'underline')}"
-        elif seed_system["file_tree"][new_path]["privilege_required"] > seed_system["aphid"]["privilege"]:
-            status = "privilege_error"
-            status_message = (
-                "|Privilege too low|\n"
-                f"{seed_system['aphid']['privilege']} < {seed_system['file_tree'][new_path]['privilege_required']}")
         else:
-            seed_system["aphid"]["current_folder"] = new_path
-            status_message = f"|Changed folder to path|\n{style(new_path, 'underline')}"
+            if path_data["type"] != "folder":
+                status = "argument_error"
+                status_message = f"|Path must be a folder|\n{style(new_path, 'underline')}"
+            elif path_data["privilege_required"] > seed_system["aphid"]["privilege"]:
+                status = "privilege_error"
+                status_message = (
+                    "|Privilege too low|\n"
+                    f"{seed_system['aphid']['privilege']} < {path_data['privilege_required']}")
+            else:
+                seed_system["aphid"]["current_folder"] = new_path
+                status_message = f"|Changed folder to path|\n{style(new_path, 'underline')}"
     else:
         seed_system["aphid"]["current_folder"] = "seed"
         status_message = f"|Changed folder to root|\n{style('seed', 'underline')}"
     return (status, status_message)
-
-
