@@ -155,8 +155,7 @@ def main():
                     name="say",
                     run=lambda seed_system, tokens: print(seed_system["aphid"]["name"], *tokens),
                     privilege_required=1)})}
-    print(
-        mock_seed["command_root"]["run"](mock_seed, ["coin", "paperclip", "windowpane"]))
+    print(mock_seed["command_root"]["run"](mock_seed, ["coin", "paperclip", "windowpane"]))
     print(send_command(mock_seed, "say hi"))
 
 
