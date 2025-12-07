@@ -7,67 +7,9 @@ from sys import stderr
 from typing import TextIO
 
 from game.ansi_actions.cursor import cursor_set
-from game.ansi_actions.style import style
+from game.seedOS.burrow.entity import get_entity_types, create_entity
 from game.terminal.screen import point_within_screen, clear_screen
 from game.utilities import sum_vectors, remove_escape_codes
-
-
-def get_entity_types():
-    """
-    Get a dictionary of new entities.
-
-    Defined entities:
-        "floor",
-        "void",
-        "wall",
-        "small_bug",
-        "large_bug",
-        "nectar",
-        "player"
-
-    :postcondition: a dictionary representing the defined entities
-    :return: a dictionary representing the defined entities
-    """
-    entities = (
-        create_entity("floor", style("▯", "dim"), on_occupy=None),
-        create_entity("void", ""),
-        create_entity("wall", "#", health=5),
-        create_entity("small_bug", style("*", "red"), health=1, base_damage=1),
-        create_entity("large_bug", style("@", "red"), health=5, base_damage=3),
-        create_entity("nectar", style("n", "yellow"), heal=2),
-        create_entity("player", style("n", "green"), health=100))
-    return {entity["name"]: entity for entity in entities}
-
-
-def create_entity(name: str, icon: str, **kwargs) -> dict:
-    """
-    Create an entity.
-
-    Every entity has a name and icon.
-
-    :param name: a string representing the name of the entity
-    :param icon: a string representing the icon to display on the board for the entity
-    :param kwargs: a dictionary of entity properties
-    :precondition: name must be a string
-    :precondition: icon must be a string
-    :precondition: position must be a tuple of 2 integers larger than or equal to 1
-    :precondition: kwargs must be a dictionary
-    :postcondition: create an entity dictionary
-    :return: a dictionary representing an entity on a board
-
-    >>> create_entity("wall", "#") == {
-    ... "name":  "wall",
-    ... "icon": "#"}
-    True
-    >>> create_entity("small bug", "*", position=(10, 13), health=1, base_damage=1) == {
-    ... "name":  "small bug",
-    ... "icon": "*",
-    ... "position": (10, 13),
-    ... "health": 1,
-    ... "base_damage": 1}
-    True
-    """
-    return {"name": name, "icon": icon, **kwargs}
 
 
 def spawn_entity(board: dict, position: tuple, name=None, entity=None) -> dict | None:
@@ -173,13 +115,9 @@ def load_board_from_file(board_file: TextIO):
             try:
                 spawn_entity(board, name=entity_icons[character], position=(column + 1, row))
             except KeyError:
-                spawn_entity(
-                    board,
-                    entity=create_entity(name=character, icon=character),
-                    position=(column + 1, row))
+                spawn_entity(board, entity=create_entity(name=character, icon=character), position=(column + 1, row))
         row += 1
     return board
-
 
 
 def draw_board(board: dict, position_offset=(0, 0), flush=True):
