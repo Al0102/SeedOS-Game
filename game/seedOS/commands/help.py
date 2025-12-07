@@ -117,9 +117,9 @@ def format_long_description(command_help):
     True
     """
     title = style(
-        style(command_help["name"], "bold") + " " + " ".join(command_help["options"]),
+        f"{style(command_help['name'], 'bold')} {' '.join(command_help['options'])}",
         "underline")
-    return title + "\n" + command_help["short_description"] + "\n" + "\n".join(command_help['long_description'])
+    return f"{title}\n{command_help['short_description']}\n{'\n'.join(command_help['long_description'])}"
 
 
 def main():
