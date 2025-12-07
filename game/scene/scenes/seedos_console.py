@@ -84,5 +84,5 @@ def handle_progress(game_data):
             "Welcome to SeedOS.",
             "To get setup with your new operating system,",
             f"enter '{style('help', 'bold', 'magenta')}' for information about commands.",
-            f"When you're ready, take a '{style('look', 'bold', 'yellow')}' inside README.txt",
+            f"When you're ready, take a '{style('look', 'bold', 'yellow')}' inside Welcome.txt",
             "for important information."))
