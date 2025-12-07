@@ -28,6 +28,7 @@ git clone https://github.com/Al0102/TermProject.git
 
 From an actual terminal or the PyCharm terminal (not the run prompt)
 The terminal should be maximised to 100 columns and 30 rows for the best experience
+Please have sound ON.
 
 ```bash
 # From TermProject
@@ -35,6 +36,11 @@ The terminal should be maximised to 100 columns and 30 rows for the best experie
 pip install
 python3 -m game.game
 ```
+
+## Controls
+
+The game uses Arrow Keys for movement and Return is to confirm/submit/select.
+For text input, your cursor position is indicated by an underscore, "_"
 
 # Rubric
 
