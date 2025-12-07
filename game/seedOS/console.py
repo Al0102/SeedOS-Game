@@ -177,6 +177,7 @@ def do_validated_prompt(game_data: dict, is_valid: Callable | None) -> str:
             break
         else:
             send_message(game_data["seed_system"], "Invalid Input")
+            prompt_user = start_prompt_user()
     return output
 
 
