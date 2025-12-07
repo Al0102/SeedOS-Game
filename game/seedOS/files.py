@@ -26,11 +26,21 @@ def create_file_tree():
             "name": "documents",
             "type": "folder",
             "privilege_required": 1},
+        "seed/documents/logs": {
+            "name": "logs",
+            "type": "folder",
+            "privilege_required": 1},
+        "seed/documents/patch.txt": {
+            "name": "patch",
+            "type": "file",
+            "extension": "txt",
+            "privilege_required": 1,
+            "data": {
+                "text_src": relative_path("assets/files/logs_patch.txt")}},
         "seed/applications": {
             "name": "applications",
             "type": "folder",
             "privilege_required": 1}}
-
 
 def to_path(path_tokens: list | tuple) -> str:
     """
@@ -50,7 +60,6 @@ def to_path(path_tokens: list | tuple) -> str:
     'school/Grade K/abc123.txt'
     """
     return "/".join(path_tokens)
-
 
 def get_parent_folder_path(file_path: str) -> str:
     """
@@ -75,7 +84,6 @@ def get_parent_folder_path(file_path: str) -> str:
     """
     return to_path(tokenize_path(file_path)[:-1])
 
-
 def get_folder_contents(seed_system: dict, folder_path, full_path=False) -> tuple:
     """
     Get the contents (dictionaries) at the folder path in <seed_system>.
@@ -97,7 +105,6 @@ def get_folder_contents(seed_system: dict, folder_path, full_path=False) -> tupl
     if not full_path:
         children = map(lambda path: path.split("/")[-1], children)
     return tuple(children)
-
 
 def convert_relative_path_to_absolute(current_path: str, new_relative_path: str) -> str:
     """
@@ -133,7 +140,6 @@ def convert_relative_path_to_absolute(current_path: str, new_relative_path: str)
     else:
         new_current_path = f"{current_path}/{first_token}",
     return convert_relative_path_to_absolute(new_current_path, to_path(relative_tokens))
-
 
 def tokenize_path(file_path):
     """

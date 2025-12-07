@@ -1,0 +1,20 @@
+## V0.5 ##
+- Added memes
+- Found bugs with developer files leaking into user systems
+
+## V0.4 ##
+- Logs, Logs, Logs
+
+## V0.3 ##
+- Blah Blah Blah
+- Blah Blah Blah
+- Who's writing these???
+- Blah Blah Blah
+- Blah Blah Blah
+
+## V0.2 ##
+- Created unnecessary challenges
+- Watered some plants
+
+## V0.1 ##
+- Planted seeds
