@@ -2,6 +2,7 @@
 Miscellaneous tools.
 """
 import re
+from typing import Any
 
 
 def get_escape_codes_indices(text):
@@ -100,7 +101,57 @@ def sum_vectors(*vectors: tuple | list) -> tuple:
     return tuple(map(sum, zip(*vectors)))
 
 
+def targets_have_key(key_name: Any, *targets: dict) -> tuple:
+    """
+    Get a tuple of mapped booleans for whether the key exists in the target.
+
+    :param key_name: a dictionary key representing the key to test for
+    :param targets: a tuple of dictionaries representing the targets to search for <key_name>
+    :precondition: key_name must be a valid dictionary key
+    :precondition: targets must be a tuple of dictionaries
+    :postcondition: get a tuple of mapped booleans for whether each dictionary in <targets> has the key <key_name>
+    :postcondition: return an empty tuple if there are no results
+    :return: a tuple of mapped of booleans representing whether each dictionary in <targets> has the key <key_name>,
+             or an empty tuple if no targets are found
+
+    >>> targets_have_key(0)
+    ()
+    >>> targets_have_key(0, {0: None}, {})
+    (True, False)
+    >>> targets_have_key("key", {0: None, 5: "key"}, {1: 0, "key": "value"}, {"key": None})
+    (False, True, True)
+    """
+    return tuple(map(lambda target: key_name in target.keys(), targets))
+
+
+def targets_with_key(key_name: Any, *targets: dict) -> tuple:
+    """
+    Get a tuple of dictionaries that have the key <key_name>.
+
+    :param key_name: a dictionary key representing the key to test for
+    :param targets: a tuple of dictionaries representing the targets to search for <key_name>
+    :precondition: key_name must be a valid dictionary key
+    :precondition: targets must be a tuple of dictionaries
+    :postcondition: get a tuple of each dictionary in <targets> that has the key <key_name>
+    :postcondition: return an empty tuple if there are no results
+    :return: a tuple of dictionaries representing the targets that have key <key_name>m
+             or an empty tuple if no results are found
+
+    >>> targets_with_key(0) == ()
+    True
+    >>> targets_with_key(0, {0: None}, {}) == tuple([{0: None}])
+    True
+    >>> targets_with_key("key", {0: None, 5: "key"}, {1: 0, "key": "value"}, {"key": None}) == (
+    ... {1: 0, "key": "value"}, {"key": None})
+    True
+    """
+    return tuple(filter(lambda target: key_name in target.keys(), targets))
+
+
 def main():
+    """
+    Drive the program.
+    """
     print(get_escape_codes_indices("\033[1mYes cod\033[0mes"))
     print(remove_escape_codes("\033[1mYes cod\033[0mes"))
     print(longest_string(("AB", "ABC123", "C")))
