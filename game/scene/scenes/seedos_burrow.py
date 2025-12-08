@@ -9,11 +9,11 @@ from sys import stderr
 from game.ansi_actions.style import style
 from game.seedOS.burrow.burrow import load_board_from_file, draw_board, spawn_entity, get_entity_types
 from game.seedOS.burrow.drivers import targeted_action, get_drivers
-from game.terminal.draw import draw_text_box
+from game.terminal.draw import draw_text_box, draw_rectangle
 from game.terminal.input import poll_key_press
 from game.terminal.screen import clear_screen, get_screen_size
 from game.seedOS.console import display_message_history, send_message, send_messages
-from game.utilities import get_direction_vectors, sum_vectors
+from game.utilities import get_direction_vectors, sum_vectors, longest_string
 
 
 def get_seedos_burrow_scene():
@@ -171,6 +171,7 @@ def display_player_stats(player, move, moves_left):
         f"All Actions: {' -> '.join((player['drivers']))}\n"
         f"Actions Left: {moves_left}\n"
         f"APHID HP: {
-        style(str(player['health']), 'green' if player['health'] > 5 else 'red')}/{player['max_health']}\n")
+        style(str(player['health']), 'green' if player['health'] > 5 else 'red')}/{player['max_health']}")
+    draw_rectangle(column=3, row=window[1] - 7, width=longest_string(text.split("\n"))[1] + 4, height=10)
     draw_text_box(column=4, row=window[1] - 6, width=window[0], height=6, text=text)
 
