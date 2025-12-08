@@ -16,7 +16,7 @@ def get_cd_command():
     return create_command(
         name="cd",
         run=run_cd,
-        privilege_required=0)
+        privilege_required=1)
 
 
 def run_cd(seed_system, tokens):
