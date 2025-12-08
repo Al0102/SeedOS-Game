@@ -34,6 +34,7 @@ def get_seedos_signup_scene():
         :postcondition: start the signup sequence
         """
         game_data["seed_system"] = init_seed_system()
+        game_data["progress"].add("new_user")
         clear_screen()
 
     def exit_seedos_signup(game_data):
@@ -45,7 +46,6 @@ def get_seedos_signup_scene():
         :postcondition: exit the seedOS signup scene
         """
         game_data["progress"].add("just_loaded")
-        game_data["progress"].add("new_user")
 
     def update_seedos_signup(game_data):
         """
