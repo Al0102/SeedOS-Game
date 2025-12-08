@@ -54,7 +54,7 @@ def init_aphid(name):
     return {
         "name": name,
         "privilege": 0,
-        "drivers": ["move" for _ in range(3)],
+        "drivers": ["move" for _ in range(2)],
         "memory": 0,
         "current_folder": "seed",
         "stability": 1}
