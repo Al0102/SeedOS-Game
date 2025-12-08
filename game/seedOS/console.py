@@ -220,6 +220,20 @@ def do_menu_prompt(game_data: dict, *options: str, style_name="prompt") -> str:
             return result
 
 
+def press_any_key_to_continue(game_data: dict) -> None:
+    """
+    Prompt user for any key press.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :precondition: game_data must be a well-formed dictionary of game data
+    :postcondition: prompt user for any key press
+    """
+    send_message(
+        game_data["seed_system"],
+        style("Press any key to continue", "background_yellow", "black", "rapid_blink"))
+    poll_key_press(game_data["key_input"])
+
+
 def main():
     """
     Drive the program.
