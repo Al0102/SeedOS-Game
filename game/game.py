@@ -32,7 +32,7 @@ def setup_game():
         "previous_scene": None,
         "active_scene": get_scenes()["startup"],
         "seed_system": None,
-        "progress": {}}
+        "progress": set()}
     return game_data
 
 

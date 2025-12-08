@@ -5,8 +5,7 @@ from game.ansi_actions.style import style
 from game.save import save_data_to_file
 from game.seedOS import init_seed_system, init_aphid
 from game.seedOS.console import (
-    send_messages, do_validated_prompt, do_menu_prompt)
-from game.terminal.input import poll_key_press
+    send_messages, do_validated_prompt, do_menu_prompt, press_any_key_to_continue)
 from game.terminal.screen import clear_screen
 
 
@@ -35,7 +34,6 @@ def get_seedos_signup_scene():
         :postcondition: start the signup sequence
         """
         game_data["seed_system"] = init_seed_system()
-        game_data["progress"] = {"new_user": True}
         clear_screen()
 
     def exit_seedos_signup(game_data):
@@ -46,7 +44,8 @@ def get_seedos_signup_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS signup scene
         """
-        game_data["progress"]["just_loaded"] = True
+        game_data["progress"].add("just_loaded")
+        game_data["progress"].add("new_user")
 
     def update_seedos_signup(game_data):
         """
@@ -97,9 +96,8 @@ def get_seedos_signup_scene():
             "Watching grass grow...",
             "Building ShellSpace...",
             "Done!",
-            style("Press any key to continue", "bold", "rapid_blink", "black", "background_yellow")
         ), 1)
-        poll_key_press(game_data["key_input"])
+        press_any_key_to_continue(game_data)
 
         return "seedos_console"
 

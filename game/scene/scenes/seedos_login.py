@@ -56,7 +56,7 @@ def get_seedos_login_scene():
         :postcondition: exit the seedOS login scene
         """
         if game_data["seed_system"]:
-            game_data["progress"]["just_loaded"] = True
+            game_data["progress"].add("just_loaded")
         clear_screen()
 
     def update_seedos_login(game_data):

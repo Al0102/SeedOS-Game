@@ -2,6 +2,7 @@
 Primary game loop for file navigation.
 """
 from game.ansi_actions.style import style
+from game.progress import handle_progress
 from game.terminal.screen import clear_screen
 from game.seedOS.command import send_command
 from game.seedOS.console import display_message_history, start_prompt_user, send_message, send_messages, \
@@ -23,6 +24,7 @@ def get_seedos_console_scene():
     :postcondition: get data for the seedOS console scene
     :return: a dictionary representing the data for the seedOS console scene
     """
+    status = None
 
     def open_seedos_console(game_data):
         """
@@ -32,8 +34,9 @@ def get_seedos_console_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: open the seedOS console
         """
+        nonlocal status
         clear_screen()
-        handle_progress(game_data)
+        status = handle_progress(game_data)
         game_data["seed_system"]["active_program"] = None
         game_data["seed_system"]["active_file"] = None
         display_message_history(game_data["seed_system"])
@@ -51,6 +54,8 @@ def get_seedos_console_scene():
         :return: a string representing the name of the next scene to run,
                  or None to signify game exit
         """
+        if status:
+            return status
         while True:
             inputted_prompt = do_validated_prompt(game_data, None)
             if inputted_prompt is None:
@@ -68,21 +73,3 @@ def get_seedos_console_scene():
         "open": open_seedos_console,
         "update": update_seedos_console,
         "exit": None}
-
-
-def handle_progress(game_data):
-    progress = game_data["progress"]
-    if progress["just_loaded"]:
-        progress["just_loaded"] = False
-        game_data["seed_system"]["message_history"].clear()
-        send_message(
-            game_data["seed_system"],
-            f"Welcome, {style(game_data['seed_system']['aphid']['name'], 'green')}")
-    if progress["new_user"]:
-        send_messages(game_data["seed_system"], (
-            f"Hello {style('beta tester!', 'bold', 'yellow')}",
-            "Welcome to SeedOS.",
-            "To get setup with your new operating system,",
-            f"enter '{style('help', 'bold', 'magenta')}' for information about commands.",
-            f"When you're ready, take a '{style('look', 'bold', 'yellow')}' inside Welcome.txt",
-            "for important information."))

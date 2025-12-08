@@ -62,8 +62,8 @@ def get_seedos_look_scene():
         :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS look scene
         """
+        game_data["progress"].add(f"read_{game_data['seed_system']['active_file']['name']}")
         clear_screen()
-        handle_progress(game_data)
 
     def update_seedos_look(game_data):
         """
@@ -105,19 +105,3 @@ def get_seedos_look_scene():
         "open": open_seedos_look,
         "update": update_seedos_look,
         "exit": exit_seedos_look}
-
-
-def handle_progress(game_data):
-    progress = game_data["progress"]
-    if progress["new_user"] and game_data["seed_system"]["active_file"]["name"] == "Welcome":
-        progress["new_user"] = False
-        game_data["seed_system"]["aphid"]["privilege"] = max(1, game_data["seed_system"]["aphid"]["privilege"])
-        send_messages(game_data["seed_system"], (
-            "",
-            style("Unlocking access...", 'yellow'),
-            "...",
-            style("APHID has unlocked privilege level 1!", "black", "background_yellow")))
-        send_message(
-            game_data["seed_system"],
-            style("Press any key to continue", "background_yellow", "black", "rapid_blink"))
-        poll_key_press(game_data["key_input"])
