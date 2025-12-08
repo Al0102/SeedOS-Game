@@ -2,6 +2,7 @@
 Base command of SeedOS, holds all available commands.
 """
 from game.seedOS.command import create_command
+from game.seedOS.commands.aphid import get_aphid_command
 from game.seedOS.commands.cd import get_cd_command
 from game.seedOS.commands.clear import get_clear_command
 from game.seedOS.commands.do import get_do_command
@@ -23,6 +24,7 @@ def create_command_root():
             "ls": get_ls_command(),
             "cd": get_cd_command(),
             "look": get_look_command(),
-            "do": get_do_command()
+            "do": get_do_command(),
+            "aphid": get_aphid_command()
         }
     )
