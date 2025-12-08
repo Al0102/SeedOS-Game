@@ -125,17 +125,34 @@ def new_user_readme_aphid_tutorial(game_data: dict) -> None:
 
 
 def handle_loss(game_data: dict) -> None | str:
+    """
+    Handle challenge loss.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :precondition: game_data must be a well-formed dictionary of game data
+    :postcondition: update the aphid stability and check for deletion
+    """
+    game_data["progress"].remove("challenge_loss")
     game_data["seed_system"]["aphid"]["stability"] -= 0.1
     send_messages(game_data["seed_system"], (
         style("APHID corrupted...", "red"),
         style("Stability lost: 10%", "red"),
         style(f"APHID stability: {game_data['seed_system']['aphid']['stability'] * 100}%", "red") ))
+    press_any_key_to_continue(game_data)
     if game_data["seed_system"]["aphid"]["stability"] <= 0:
         return handle_death(game_data)
     return None
 
 
 def handle_death(game_data: dict) -> None | str:
+    """
+    Handle aphid fully corrupted.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :precondition: game_data must be a well-formed dictionary of game data
+    :postcondition: shows death message
+    :return: a string representing the name of the next scene (main_menu)
+    """
     clear_screen()
     send_messages(game_data["seed_system"], (
         style("APHID stability: 0%", "red"),
@@ -146,6 +163,13 @@ def handle_death(game_data: dict) -> None | str:
 
 
 def handle_win(game_data: dict) -> None:
+    """
+    Handle challenge win.
+
+    :param game_data: a dictionary representing the data needed to run the game
+    :precondition: game_data must be a well-formed dictionary of game data
+    :postcondition: give the aphid more memory
+    """
     memory_gained = game_data["seed_system"]["active_file"]["data"]["difficulty"] * 10
     game_data["seed_system"]["aphid"]["memory"] += memory_gained
     send_messages(game_data["seed_system"], (

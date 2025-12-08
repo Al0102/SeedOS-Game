@@ -71,13 +71,21 @@ def get_seedos_burrow_scene():
             f"Running: {style(game_data['seed_system']['active_file']['name'], 'yellow')}",
             "Done!"), 1)
 
-    def exit_seedos_burrow(_):
+    def exit_seedos_burrow(game_data: dict) -> None:
         """
         Cleans the scene before it is switched.
 
+        :param game_data: a dictionary representing the data needed to run the game
+        :precondition game_data: must be a well-formed dictionary of game data
         :postcondition: exit the seedOS burrow scene
         """
         clear_screen()
+        if aphid_entity["state"] == "win":
+            game_data["progress"].add("challenge_win")
+        elif aphid_entity["state"] == "dead":
+            game_data["progress"].add("challenge_loss")
+        else:
+            game_data["progress"].add("challenge_exited_unexpectedly")
 
     def update_seedos_burrow(game_data):
         """
@@ -99,12 +107,8 @@ def get_seedos_burrow_scene():
             clear_screen()
             player_turn(game_data, board, aphid_entity, max_moves_left)
             environment_turn(board, aphid_entity, aphid_entity["position"])
-            if aphid_entity["state"] == "win":
-                game_data["progress"].add("challenge_win")
+            if aphid_entity["state"] != "alive":
                 return "seedos_console"
-            if aphid_entity["state"] == "dead":
-                game_data["progress"].add("challenge_loss")
-                return "main_menu"
 
     return {
         "name": "seedos_burrow",
