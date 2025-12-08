@@ -88,7 +88,7 @@ def create_file_tree():
             "privilege_required": 1,
             "data": {
                 "board_src": relative_path("assets/challenges/boards/aphid_tutorial.txt"),
-                "player_spawn": (3, 1),
+                "player_spawn": (3, 2),
                 "difficulty": 1,
                 "complete_progress": {"aphid_tutorial_done"}}},
     }
