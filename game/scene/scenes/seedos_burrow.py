@@ -138,7 +138,7 @@ def player_turn(game_data, board, player, max_moves):
 def environment_turn(board, source_entity, target_entities):
     for target in target_entities:
         if target["type"] == "pickup":
-            source_entity["health"] += target["heal"]
+            source_entity["health"] = min(source_entity["max_health"], source_entity["health"] + target["heal"])
         elif target["type"] == "corruption":
             source_entity["health"] -= target["base_damage"]
             if source_entity["health"] <= 0:
