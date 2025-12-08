@@ -31,14 +31,14 @@ def create_file_tree():
             "type": "folder",
             "privilege_required": 1},
         "seed/documents/misc/journal.txt": {
-            "name": "journal.txt",
+            "name": "journal",
             "type": "file",
             "extension": "txt",
             "privilege_required": 1,
             "data": {
                 "text_src": relative_path("assets/files/dev_journal.txt")}},
         "seed/documents/misc/hello_world.txt": {
-            "name": "hello_world.txt",
+            "name": "hello_world",
             "type": "file",
             "extension": "txt",
             "privilege_required": 1,
@@ -65,7 +65,33 @@ def create_file_tree():
         "seed/applications": {
             "name": "applications",
             "type": "folder",
-            "privilege_required": 1}}
+            "privilege_required": 1},
+        "seed/applications/antivirus": {
+            "name": "antivirus",
+            "type": "folder",
+            "privilege_required": 2},
+        "seed/applications/tutorial": {
+            "name": "tutorial",
+            "type": "folder",
+            "privilege_required": 1},
+        "seed/applications/tutorial/aphid_README.txt": {
+            "name": "aphid_README",
+            "type": "file",
+            "extension": "txt",
+            "privilege_required": 1,
+            "data": {
+                "text_src": relative_path("assets/files/tutorial_README.txt")}},
+        "seed/applications/tutorial/aphid_tutorial.sprout": {
+            "name": "aphid_tutorial",
+            "type": "file",
+            "extension": "sprout",
+            "privilege_required": 1,
+            "data": {
+                "board_src": relative_path("assets/challenges/boards/aphid_tutorial.txt"),
+                "player_spawn": (3, 1),
+                "difficulty": 1,
+                "complete_progress": {"aphid_tutorial_done"}}},
+    }
 
 
 def to_path(path_tokens: list | tuple) -> str:
