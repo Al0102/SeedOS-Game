@@ -89,6 +89,20 @@
     ]
   },
   {
+    "name": "aphid",
+    "options": [
+      "<option> [options]"
+    ],
+    "short_description": "Manage your APHID.",
+    "long_description": [
+      "Syntax:",
+      "  aphid status",
+      "  - get the status information for your APHID",
+      "  aphid upgrade <path>",
+      "  - upgrade your APHID with a upgrade driver file"
+    ]
+  },
+  {
     "name": "rain",
     "options": [
       "<options> [options]"
