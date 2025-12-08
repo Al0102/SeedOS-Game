@@ -25,6 +25,12 @@ def targeted_action(action_function: Callable) -> Callable:
 
 
 def get_drivers() -> dict:
+    """
+    Get a dictionary of action functions.
+
+    :postcondition: get all driver names and their function
+    :return: a dictionary representing of keys with driver names and values with the driver function
+    """
     return {
         "move": move_entity
     }

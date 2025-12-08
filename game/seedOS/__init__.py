@@ -40,6 +40,8 @@ def init_aphid(name):
     {
         "name": <string>,
         "privilege": <integer of aphid security clearance>,
+        "drivers": <list of strings for aphid actions>,
+        "memory": <integer of player experience>,
         "current_folder": <string path of current folder>,
         "stability": <float from [0, 1] representing APHID health>}
     }
@@ -52,5 +54,7 @@ def init_aphid(name):
     return {
         "name": name,
         "privilege": 0,
+        "drivers": ["move" for _ in range(3)],
+        "memory": 0,
         "current_folder": "seed",
         "stability": 1}

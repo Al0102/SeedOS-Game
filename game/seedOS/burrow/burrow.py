@@ -2,9 +2,8 @@
 Burrow sessions.
 """
 import itertools
-import random
 from io import StringIO
-from collections.abc import Callable
+from sys import stderr
 from typing import TextIO
 
 from game.ansi_actions.cursor import cursor_set
@@ -32,7 +31,7 @@ def load_board_from_file(board_file: TextIO):
     :param board_file: a TextIO object representing the tilemap to create a board from
     :precondition: board_file must be a TextIO object
     :precondition: get_entity_types must be defined
-    :postconditon: create a board from <board_file>
+    :postcondition: create a board from <board_file>
     :postconditon: whitespace ("void" entities) will be ignored
     :postconditon: if character is not the icon for an existing entity,
                    create an entity with a name and icon set to that character
@@ -108,22 +107,23 @@ def get_entities_at_position(board, position):
     :postcondition: spawn a new "void" entity if <position> does not exist yet
     :return: a list of dictionaries representing the data of the entities at <position> in <board>,
 
-    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}]}
+    >>> new_board = {"entity_id": itertools.count(), (1, 1): [{"name": "floor", "icon": "▯"}]}
     >>> get_entities_at_position(new_board, (1, 1)) == [{"name": "floor", "icon": "▯"}]
     True
-    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}, {"name": "small bug", "icon": "*"}]}
+    >>> new_board = {"entity_id": itertools.count(), (1, 1): [{"name": "floor", "icon": "▯"}, {"name": "small bug", "icon": "*"}]}
     >>> get_entities_at_position(new_board, (1, 1)) == [
     ...     {"name": "floor", "icon": "▯"}, {"name": "small bug", "icon": "*"}]
     True
-    >>> new_board = {(1, 1): [{"name": "floor", "icon": "▯"}]}
+    >>> new_board = {"entity_id": itertools.count(), (1, 1): [{"name": "floor", "icon": "▯"}]}
     >>> get_entities_at_position(new_board, (1, 5)) == [{"name": "void", "icon": ""}]
     False
     """
     try:
-        entity = board[position]
+        entities = board[position]
     except KeyError:
-        entity = spawn_entity(board, position, get_entity_types()["void"])
-    return entity
+        spawn_entity(board, position, get_entity_types()["void"])
+        entities = board[position]
+    return entities
 
 
 def get_entity_types():
@@ -147,11 +147,14 @@ def get_entity_types():
             "void", "",
             solid=True, type="tile"),
         create_entity(
+            "goal", style("G", 'yellow'),
+            solid=False, type="goal"),
+        create_entity(
             "floor", style(".", "dim"),
-            solid=True, type="tile"),
+            solid=False, type="tile"),
         create_entity(
             "wall", "#",
-            health=5, solid=True, type="tile"),
+            solid=True, type="tile"),
         create_entity(
             "small_corruption", style("*", "red"),
             base_damage=1, solid=False, type="corruption"),
@@ -163,7 +166,7 @@ def get_entity_types():
             heal=2, solid=False, type="pickup"),
         create_entity(
             "player", style("P", "green"),
-            health=10, base_damage=1, solid=True, type="player"))
+            max_health=10, base_damage=1, solid=True, type="player"))
     return {entity["name"]: entity for entity in entities}
 
 
