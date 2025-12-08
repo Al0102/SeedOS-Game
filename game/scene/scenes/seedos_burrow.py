@@ -82,10 +82,12 @@ def get_seedos_burrow_scene():
         clear_screen()
         if aphid_entity["state"] == "win":
             game_data["progress"].add("challenge_win")
+            game_data["progress"].add(f"won_{game_data['seed_system']['active_file']['name']}")
         elif aphid_entity["state"] == "dead":
             game_data["progress"].add("challenge_loss")
         else:
             game_data["progress"].add("challenge_exited_unexpectedly")
+        game_data["progress"].add(f"did_{game_data['seed_system']['active_file']['name']}")
 
     def update_seedos_burrow(game_data):
         """

@@ -36,6 +36,8 @@ def handle_progress(game_data: dict) -> None | str:
         new_user_read_welcome(game_data)
     if "read_aphid_README" in progress and game_data["seed_system"]["aphid"]["privilege"] == 1:
         new_user_readme_aphid_tutorial(game_data)
+    if "challenge_win" in progress:
+        return handle_win(game_data)
     if "challenge_loss" in progress:
         return handle_loss(game_data)
     return None
@@ -170,6 +172,7 @@ def handle_win(game_data: dict) -> None:
     :precondition: game_data must be a well-formed dictionary of game data
     :postcondition: give the aphid more memory
     """
+    game_data["progress"].remove("challenge_win")
     memory_gained = game_data["seed_system"]["active_file"]["data"]["difficulty"] * 10
     game_data["seed_system"]["aphid"]["memory"] += memory_gained
     send_messages(game_data["seed_system"], (
